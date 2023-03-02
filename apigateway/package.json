@@ -20,5 +20,10 @@
   "bugs": {
     "url": "https://github.com/H1Gdev/test.aws/issues"
   },
-  "homepage": "https://github.com/H1Gdev/test.aws#readme"
+  "homepage": "https://github.com/H1Gdev/test.aws#readme",
+  "devDependencies": {
+    "frisby": "github:vlucas/frisby",
+    "jest": "^29.4.3",
+    "joi": "^17.8.3"
+  }
 }
