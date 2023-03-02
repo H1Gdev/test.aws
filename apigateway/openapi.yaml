@@ -1,0 +1,26 @@
+openapi: 3.0.3
+info:
+  title: My API
+  version: 0.1.0
+paths:
+  /test:
+    get:
+      # Method
+      responses:
+        200:
+          description: 200 OK response.
+          headers:
+            Content-Type:
+              schema:
+                type: string
+      # Integration
+      # https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-integration-settings.html
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: "{'statusCode': 200}"
+        responses:
+          default:
+            statusCode: 200
+            responseParameters:
+              method.response.header.Content-Type: "'application/json'"
