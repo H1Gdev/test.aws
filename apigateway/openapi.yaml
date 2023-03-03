@@ -1,11 +1,25 @@
 openapi: 3.0.3
 info:
   title: My API
+  description: My API with Amazon API Gateway using OpenAPI.
   version: 0.1.0
+servers:
+  - url: "{basePath}"
+    variables:
+      basePath:
+        default: /test
+tags:
+  - name: test
 paths:
   /test:
     get:
+      tags:
+        - test
       # Method
+      # Request
+      parameters:
+        - $ref: "#/components/parameters/Parameter0"
+      # Response
       responses:
         200:
           description: 200 OK response.
@@ -13,14 +27,137 @@ paths:
             Content-Type:
               schema:
                 type: string
+      x-amazon-apigateway-request-validator: params-only
       # Integration
       # https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-integration-settings.html
       x-amazon-apigateway-integration:
         type: mock
+        # Request
         requestTemplates:
-          application/json: "{'statusCode': 200}"
+          # Mapping to 'Integration Response'.
+          application/json: "{\"statusCode\": 200}"
+        # Response
         responses:
           default:
             statusCode: 200
             responseParameters:
+              # Mapping to 'Method Response'.
               method.response.header.Content-Type: "'application/json'"
+    post:
+      tags:
+        - test
+      # Method
+      # Request
+      parameters:
+        - $ref: "#/components/parameters/Parameter0"
+        # name is case sensitive.
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Body0"
+        required: true
+      # Response
+      responses:
+        200:
+          description: 200 OK response.
+          headers:
+            # Enable CORS
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  request:
+                    $ref: "#/components/schemas/Body0"
+                  message:
+                    type: string
+                # Only Request Validation, so not work...
+                required:
+                  - message
+      x-amazon-apigateway-request-validator: all
+      # Integration
+      x-amazon-apigateway-integration:
+        type: mock
+        # Request
+        requestTemplates:
+          application/json: |-
+            #set($context.requestOverride.path.body = $input.body)
+            {
+              "statusCode": 200
+            }
+        # Response
+        responses:
+          default:
+            statusCode: 200
+            responseParameters:
+              # Enable CORS
+              # If do not specify this in post method, return 500 Internal Server Error.
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            responseTemplates:
+              application/json: |-
+                #set($body = $context.requestOverride.path.body)
+                {
+                  "request": $body,
+                  "message": "Echo Request Body.($util.parseJson($body).name)"
+                }
+components:
+  schemas:
+    Body0:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          $ref: "#/components/schemas/Type"
+      required:
+        - name
+    Type:
+      type: string
+      enum:
+        - AAA
+        - BBB
+        - CCC
+  parameters:
+    Parameter0:
+      name: q0
+      in: query
+      required: true
+      schema:
+        type: string
+        # Request Validation: not work...
+        enum:
+          - AAA
+          - BBB
+          - CCC
+  requestBodies:
+    Body0:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Body0"
+      required: true
+# Request Validation
+# https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-method-request-validation.html
+x-amazon-apigateway-request-validators:
+  # Overwrites default name, but cannot be specified if undefined.
+  all:
+    validateRequestBody: true
+    validateRequestParameters: true
+  params-only:
+    validateRequestBody: false
+    validateRequestParameters: true
+  # 'NONE' is duplicated if define NONE.
+  NONE:
+    validateRequestBody: false
+    validateRequestParameters: false
+# Sets all methods.
+x-amazon-apigateway-request-validator: NONE
