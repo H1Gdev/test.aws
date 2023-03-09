@@ -47,4 +47,34 @@ describe('Amazon API Gateway Example', () => {
       .expect('status', 200)
       .expect('header', 'Content-Type', 'application/json');
   }, timeout);
+
+  it('GET /lambda', () => {
+    const url = new URL(stage + '/lambda', host);
+    url.searchParams.append('q0', 'a');
+    return frisby.get(url)
+      //.inspectRequestHeaders()
+      //.inspectRequest()
+      //.inspectStatus()
+      //.inspectHeaders()
+      //.inspectBody()
+      .expect('status', 200)
+      .expect('header', 'Content-Type', 'application/json');
+  }, timeout);
+  it('POST /lambda', () => {
+    const url = new URL(stage + '/lambda', host);
+    url.searchParams.append('q0', 'a');
+    return frisby.post(url, {
+      body: {
+        name: 'User',
+        type: 'AAA',
+      }
+    })
+      //.inspectRequestHeaders()
+      //.inspectRequest()
+      //.inspectStatus()
+      //.inspectHeaders()
+      //.inspectBody()
+      .expect('status', 200)
+      .expect('header', 'Content-Type', 'application/json');
+  }, timeout);
 });
