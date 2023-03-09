@@ -10,6 +10,7 @@ servers:
         default: /test
 tags:
   - name: test
+  - name: lambda
 paths:
   /test:
     get:
@@ -109,6 +110,76 @@ paths:
                   "request": $body,
                   "message": "Echo Request Body.($util.parseJson($body).name)"
                 }
+  # AWS Lambda
+  # https://docs.aws.amazon.com/lambda/latest/dg/services-apigateway.html
+  /lambda:
+    get:
+      tags:
+        - lambda
+      responses:
+        200:
+          description: 200 OK response.
+          headers:
+            Content-Type:
+              schema:
+                type: string
+      x-amazon-apigateway-integration:
+        # Custom Integration
+        # User-defined Lambda event(Using 'Mapping Templates')
+        #type: aws
+        # Proxy Integration
+        # System-defined Lambda event
+        type: aws_proxy
+        # Add permission to Lambda function.
+        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:<NAME>/invocations
+        httpMethod: POST
+        responses:
+          default:
+            statusCode: 200
+    post:
+      tags:
+        - lambda
+      responses:
+        200:
+          description: 200 OK response.
+          headers:
+            # Enable CORS
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+      x-amazon-apigateway-integration:
+        # Custom Integration
+        #type: aws
+        # Proxy Integration
+        type: aws_proxy
+        # Add permission to Lambda function.
+        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:<NAME>/invocations
+        httpMethod: POST
+        responses:
+          default:
+            statusCode: 200
+    put:
+      tags:
+        - lambda
+      responses:
+        200:
+          description: 200 OK response.
+          headers:
+            # Enable CORS
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+      x-amazon-apigateway-integration:
+        # Custom Integration
+        #type: aws
+        # Proxy Integration
+        type: aws_proxy
+        # Add permission to Lambda function.
+        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:<NAME>/invocations
+        httpMethod: POST
+        responses:
+          default:
+            statusCode: 200
 components:
   schemas:
     Body0:
