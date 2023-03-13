@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 exports.handler = async (event/* Request */, context) => {
   // Response
   const response = {
@@ -8,6 +10,7 @@ exports.handler = async (event/* Request */, context) => {
     body: JSON.stringify({
       event: event,
       context: context,
+      lodash: _.VERSION,
     }),
   };
   return response;
