@@ -4,7 +4,9 @@
   "description": "Test of AWS Lambda",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "archive": "zip function.zip -r . -x '.gitignore' 'package.json'"
   },
   "repository": {
     "type": "git",
