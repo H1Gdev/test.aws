@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "archive": "zip function.zip -r . -x '.gitignore' 'package.json'"
+    "archive": "zip function.zip -r . -x '.gitignore' 'package.json' 'package-lock.json'"
   },
   "repository": {
     "type": "git",
@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/H1Gdev/test.aws/issues"
   },
-  "homepage": "https://github.com/H1Gdev/test.aws#readme"
+  "homepage": "https://github.com/H1Gdev/test.aws#readme",
+  "dependencies": {
+    "lodash": "^4.17.21"
+  }
 }
