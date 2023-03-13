@@ -1,0 +1,26 @@
+{
+  "name": "aws.lambda.layer.lodash",
+  "version": "1.0.0",
+  "description": "Test of AWS Lambda",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "archive": "rm -rf node_modules; npm install --omit=dev && rm -f layer.zip; cd .. && cp -r lodash nodejs && zip lodash/layer.zip -r nodejs -x 'nodejs/package.json' 'nodejs/package-lock.json' '*__tests__*' '*coverage*' '*.eslintrc*' '*.git*' && rm -rf nodejs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/H1Gdev/test.aws.git"
+  },
+  "keywords": [
+    "AWS",
+    "AWS Lambda"
+  ],
+  "author": "H1Gdev",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/H1Gdev/test.aws/issues"
+  },
+  "homepage": "https://github.com/H1Gdev/test.aws#readme",
+  "dependencies": {
+    "lodash": "^4.17.21"
+  }
+}
