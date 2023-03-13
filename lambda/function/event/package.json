@@ -1,0 +1,23 @@
+{
+  "name": "aws.lambda.function.event",
+  "version": "1.0.0",
+  "description": "Test of AWS Lambda",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/H1Gdev/test.aws.git"
+  },
+  "keywords": [
+    "AWS",
+    "AWS Lambda"
+  ],
+  "author": "H1Gdev",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/H1Gdev/test.aws/issues"
+  },
+  "homepage": "https://github.com/H1Gdev/test.aws#readme"
+}
