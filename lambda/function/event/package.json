@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/H1Gdev/test.aws#readme",
   "devDependencies": {
+    "@aws-lambda-powertools/logger": "^1.8.0",
     "eslint": "^8.37.0",
     "jest": "^29.5.0",
     "lodash": "^4.17.21"
