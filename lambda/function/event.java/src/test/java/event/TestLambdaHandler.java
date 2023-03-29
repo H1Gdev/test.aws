@@ -7,8 +7,11 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 // https://junit.org/junit5/docs/current/api/org.junit.jupiter.api/org/junit/jupiter/api/Assertions.html
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,19 +24,29 @@ class TestLambdaHandler {
     @Test
     void test() {
         APIGatewayProxyRequestEvent event = new APIGatewayProxyRequestEvent();
-        Context context = new TestContext();
         LambdaHandler handler = new LambdaHandler();
-        APIGatewayProxyResponseEvent response = handler.handleRequest(event, context);
+        APIGatewayProxyResponseEvent response = handler.handleRequest(event, new LambdaContext());
+        assertEquals(200, response.getStatusCode());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"fatal", "error", "warn", "info", "debug", "trace", ""})
+    void testLogging(String level) {
+        Map<String, String> queryStringParameters = Map.of("log", level);
+        APIGatewayProxyRequestEvent event = new APIGatewayProxyRequestEvent();
+        event.setQueryStringParameters(queryStringParameters);
+        LambdaHandler handler = new LambdaHandler();
+        APIGatewayProxyResponseEvent response = handler.handleRequest(event, new LambdaContext());
         assertEquals(200, response.getStatusCode());
     }
 
     // https://docs.aws.amazon.com/lambda/latest/dg/java-context.html
-    static class TestContext implements Context {
+    static class LambdaContext implements Context {
         public String getAwsRequestId() {
-            return "test.AwsRequestId";
+            return "test-test";
         }
         public String getLogGroupName() {
-            return "/aws/lambda/function";
+            return "/aws/lambda/event";
         }
         public String getLogStreamName() {
             return "test";
@@ -45,7 +58,7 @@ class TestLambdaHandler {
             return "$LATEST";
         }
         public String getInvokedFunctionArn() {
-            return "test.ARN";
+            return "arn:aws:lambda:REGION:ACCOUNT-ID:function:event";
         }
         public CognitoIdentity getIdentity() {
             return null;
