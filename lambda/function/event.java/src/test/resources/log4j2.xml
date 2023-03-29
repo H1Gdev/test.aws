@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="JsonAppender" target="SYSTEM_OUT">
+            <JsonTemplateLayout eventTemplateUri="classpath:LambdaJsonLayout.json" />
+        </Console>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%r [%t] %p %c - %m%n" />
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Logger name="JsonLogger" level="INFO" additivity="false">
+            <AppenderRef ref="JsonAppender" />
+        </Logger>
+        <Root level="all">
+            <AppenderRef ref="JsonAppender" />
+        </Root>
+        <Logger name="event.TestLambdaHandler" additivity="false">
+            <AppenderRef ref="Console" />
+        </Logger>
+    </Loggers>
+</Configuration>
