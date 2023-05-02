@@ -2,6 +2,9 @@
   "name": "aws.lambda.function.event",
   "version": "1.0.0",
   "description": "Test of AWS Lambda",
+  "files": [
+    "src"
+  ],
   "main": "src/index.js",
   "scripts": {
     "test": "jest",
