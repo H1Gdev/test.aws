@@ -1,0 +1,164 @@
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification.html
+
+# [AWS CloudFormation Template]
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-guide.html
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-reference.html
+AWSTemplateFormatVersion: '2010-09-09'
+
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-section-structure.html
+Transform: AWS::Serverless-2016-10-31
+
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-description-structure.html
+Description: >
+  sam-app
+
+  Sample SAM Template for sam-app
+
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html
+Globals:
+  Function:
+    Timeout: 3
+
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
+Resources:
+  # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-resources-and-properties.html
+  EventFunction:
+    # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: event/
+      Handler: src/index.handler
+      Layers:
+        # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-ref.html
+        - !Ref LodashLayer
+        # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-sub.html
+        - !Sub arn:aws:lambda:${AWS::Region}:094274105915:layer:AWSLambdaPowertoolsTypeScript:11
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-templates.html
+      Policies: []
+      # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html#sam-specification-template-anatomy-globals-implicit-apis
+      Events:
+        # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-eventsource.html
+        GetEvent:
+          # lambda:InvokeFunction permission is implicitly granted.
+          # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html
+          Type: Api
+          Properties:
+            Path: /event
+            Method: get
+  LodashLayer:
+    # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-layerversion.html
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: lodash
+      ContentUri: lodash/
+      CompatibleRuntimes:
+        - nodejs18.x
+      CompatibleArchitectures:
+        - x86_64
+    # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/building-layers.html
+    Metadata:
+      BuildMethod: nodejs18.x
+      BuildArchitecture: x86_64
+
+  EventJavaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: event.java/
+      Handler: event.LambdaHandler::handleRequest
+      Layers:
+        # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-ref.html
+        - !Ref JavaLayer
+      Runtime: java11
+      Architectures:
+        - x86_64
+      Timeout: 30
+      # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-templates.html
+      Policies: []
+      # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html#sam-specification-template-anatomy-globals-implicit-apis
+      Events:
+        # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-eventsource.html
+        GetEvent:
+          # lambda:InvokeFunction permission is implicitly granted.
+          # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html
+          Type: Api
+          Properties:
+            Path: /event_java
+            Method: get
+  JavaLayer:
+    # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-layerversion.html
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: java
+      ContentUri: layer.java/
+      CompatibleRuntimes:
+        - java11
+      CompatibleArchitectures:
+        - x86_64
+    # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/building-layers.html
+    Metadata:
+      BuildMethod: java11
+      BuildArchitecture: x86_64
+
+  EventPythonFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      # Python cannot set ignore files.
+      CodeUri: event.python/src/
+      Handler: lambda_function.lambda_handler
+      Layers:
+        # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-sub.html
+        - !Sub arn:aws:lambda:${AWS::Region}:017000801446:layer:AWSLambdaPowertoolsPythonV2:32
+      Runtime: python3.10
+      Architectures:
+        - x86_64
+      # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-templates.html
+      Policies: []
+      # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html#sam-specification-template-anatomy-globals-implicit-apis
+      Events:
+        # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-eventsource.html
+        GetEvent:
+          # lambda:InvokeFunction permission is implicitly granted.
+          # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html
+          Type: Api
+          Properties:
+            Path: /event_python
+            Method: get
+
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/outputs-section-structure.html
+Outputs:
+  EventApi:
+    Description: "API Gateway endpoint URL for Prod stage for Event function"
+    # ServerlessRestApi(Implicit API)
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/event/"
+  EventFunctionArn:
+    Description: "Event Lambda Function ARN"
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-getatt.html
+    Value: !GetAtt EventFunction.Arn
+  EventFunctionIamRole:
+    Description: "Implicit IAM Role created for Event function"
+    Value: !GetAtt EventFunctionRole.Arn
+
+  EventJavaApi:
+    # ServerlessRestApi(Implicit API)
+    Description: "API Gateway endpoint URL for Prod stage for EventJava function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/event_java/"
+  EventJavaFunctionArn:
+    Description: "EventJava Lambda Function ARN"
+    Value: !GetAtt EventJavaFunction.Arn
+  EventJavaFunctionIamRole:
+    Description: "Implicit IAM Role created for EventJava function"
+    Value: !GetAtt EventJavaFunctionRole.Arn
+
+  EventPythonApi:
+    # ServerlessRestApi(Implicit API)
+    Description: "API Gateway endpoint URL for Prod stage for EventPython function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/event_python/"
+  EventPythonFunctionArn:
+    Description: "EventPython Lambda Function ARN"
+    Value: !GetAtt EventPythonFunction.Arn
+  EventPythonFunctionIamRole:
+    Description: "Implicit IAM Role created for EventPython function"
+    Value: !GetAtt EventPythonFunctionRole.Arn
