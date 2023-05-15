@@ -131,7 +131,8 @@ paths:
         # System-defined Lambda event
         type: aws_proxy
         # Add permission to Lambda function.
-        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:<NAME>/invocations
+        uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${EventJavaFunction.Arn}/invocations
         httpMethod: POST
         responses:
           default:
@@ -153,7 +154,8 @@ paths:
         # Proxy Integration
         type: aws_proxy
         # Add permission to Lambda function.
-        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:<NAME>/invocations
+        uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${EventFunction.Arn}/invocations
         httpMethod: POST
         responses:
           default:
@@ -175,7 +177,8 @@ paths:
         # Proxy Integration
         type: aws_proxy
         # Add permission to Lambda function.
-        uri: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:<NAME>/invocations
+        uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${EventPythonFunction.Arn}/invocations
         httpMethod: POST
         responses:
           default:

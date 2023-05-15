@@ -14,6 +14,13 @@ Description: >
 
   Sample SAM Template for sam-app
 
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html
+Parameters:
+  StageName:
+    Description: API Gateway StageName
+    Type: String
+    Default: Prod
+
 # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html
 Globals:
   Function:
@@ -46,8 +53,9 @@ Resources:
           # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html
           Type: Api
           Properties:
-            Path: /event
-            Method: get
+            Path: /lambda
+            Method: post
+            RestApiId: !Ref OpenApi
   LodashLayer:
     # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-layerversion.html
     Type: AWS::Serverless::LayerVersion
@@ -85,8 +93,9 @@ Resources:
           # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html
           Type: Api
           Properties:
-            Path: /event_java
+            Path: /lambda
             Method: get
+            RestApiId: !Ref OpenApi
     # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/building-custom-runtimes.html
     Metadata:
       BuildMethod: makefile
@@ -127,15 +136,29 @@ Resources:
           # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html
           Type: Api
           Properties:
-            Path: /event_python
-            Method: get
+            Path: /lambda
+            Method: put
+            RestApiId: !Ref OpenApi
+
+  OpenApi:
+    # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-api.html
+    Type: AWS::Serverless::Api
+    Properties:
+      # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-api-endpointconfiguration.html
+      EndpointConfiguration: REGIONAL
+      StageName: !Ref StageName
+      OpenApiVersion: 3.0.3
+      DefinitionBody:
+        Fn::Transform:
+          Name: AWS::Include
+          Parameters:
+            Location: ./api/openapi.yaml
 
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/outputs-section-structure.html
 Outputs:
   EventApi:
     Description: "API Gateway endpoint URL for Prod stage for Event function"
-    # ServerlessRestApi(Implicit API)
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/event/"
+    Value: !Sub "https://${OpenApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/lambda/"
   EventFunctionArn:
     Description: "Event Lambda Function ARN"
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-getatt.html
@@ -145,9 +168,8 @@ Outputs:
     Value: !GetAtt EventFunctionRole.Arn
 
   EventJavaApi:
-    # ServerlessRestApi(Implicit API)
     Description: "API Gateway endpoint URL for Prod stage for EventJava function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/event_java/"
+    Value: !Sub "https://${OpenApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/lambda/"
   EventJavaFunctionArn:
     Description: "EventJava Lambda Function ARN"
     Value: !GetAtt EventJavaFunction.Arn
@@ -156,9 +178,8 @@ Outputs:
     Value: !GetAtt EventJavaFunctionRole.Arn
 
   EventPythonApi:
-    # ServerlessRestApi(Implicit API)
     Description: "API Gateway endpoint URL for Prod stage for EventPython function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/event_python/"
+    Value: !Sub "https://${OpenApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/lambda/"
   EventPythonFunctionArn:
     Description: "EventPython Lambda Function ARN"
     Value: !GetAtt EventPythonFunction.Arn
