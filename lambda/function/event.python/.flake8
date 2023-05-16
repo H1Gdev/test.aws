@@ -1,0 +1,8 @@
+# https://flake8.pycqa.org/en/latest/user/configuration.html
+
+[flake8]
+max-line-length=200
+
+# flake8-import-order
+application_import_names=src
+import-order-style=pep8
