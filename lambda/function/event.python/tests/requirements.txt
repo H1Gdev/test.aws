@@ -1,0 +1,16 @@
+# Powertools for AWS Lambda
+aws-lambda-powertools
+boto3
+fastjsonschema
+
+# Linter
+flake8
+flake8-import-order
+
+# pytest
+pytest
+pytest-cov
+pytest-env
+pytest-html
+pytest-mock
+pytest-only

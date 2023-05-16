@@ -1,0 +1,52 @@
+import json
+from http import HTTPStatus
+
+import boto3
+from aws_lambda_powertools import Logger
+
+logger = Logger()
+
+
+@logger.inject_lambda_context
+def lambda_handler(event, context):
+    if call_from_api(event):
+        logger.info('[Event]call from API Gateway')
+
+    query_string_parameters = event.get('queryStringParameters')
+    function_name = query_string_parameters.get('functionName') if query_string_parameters is not None else None
+
+    if function_name is not None:
+        query_string_parameters.pop('functionName')
+        logger.info(f"[Event]{event}")
+        # Proxy Lambda
+        # - need boto3
+        # - need AWSLambdaRole
+        response = boto3.client('lambda').invoke(
+            FunctionName=function_name,
+            InvocationType='RequestResponse',
+            Payload=json.dumps(event),
+        )
+        logger.info(f"[Response]{response}")
+        # <class 'botocore.response.StreamingBody'> -read()-> <class 'bytes'> -json.loads()-> <class 'dict'>
+        payload = json.loads(response.get('Payload').read())
+        logger.info(f"[Payload]{payload}")
+        # https://docs.aws.amazon.com/lambda/latest/dg/python-exceptions.html
+        if response.get('FunctionError'):
+            logger.error(f"[Error]{payload.get('errorMessage')}({payload.get('errorType')})")
+        return payload
+
+    # Response
+    response = {
+        'statusCode': HTTPStatus.OK.value,
+        'headers': {
+            'Content-Type': 'application/json',
+        },
+        'body': json.dumps({
+            'event': event,
+        })
+    }
+    return response
+
+
+def call_from_api(event):
+    return 'apiId' in event.get('requestContext', {})
