@@ -11,10 +11,6 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
-test {
-    useJUnitPlatform()
-}
-
 dependencies {
     // https://docs.aws.amazon.com/lambda/latest/dg/java-package.html#java-package-libraries
     implementation 'com.amazonaws:aws-lambda-java-core:1.2.1'
@@ -22,20 +18,11 @@ dependencies {
     runtimeOnly 'com.amazonaws:aws-lambda-java-log4j2:1.5.1'
 
     implementation 'org.apache.commons:commons-lang3:3.12.0'
-
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
 }
 
-task packageAllZip(type: Zip) {
-    from compileJava
-    from processResources
-    into('lib') {
+task packageZip(type: Zip) {
+    into('java/lib') {
         from configurations.runtimeClasspath
     }
-}
-task packageZip(type: Zip) {
-    from compileJava
-    from processResources
 }
 build.dependsOn packageZip
