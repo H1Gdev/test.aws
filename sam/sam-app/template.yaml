@@ -87,6 +87,9 @@ Resources:
           Properties:
             Path: /event_java
             Method: get
+    # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/building-custom-runtimes.html
+    Metadata:
+      BuildMethod: makefile
   JavaLayer:
     # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-layerversion.html
     Type: AWS::Serverless::LayerVersion
