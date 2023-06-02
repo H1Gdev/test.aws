@@ -83,6 +83,10 @@ Resources:
       Architectures:
         - x86_64
       Timeout: 30
+      # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-snapstart.html
+      SnapStart:
+        ApplyOn: PublishedVersions
+      AutoPublishAlias: live
       # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-templates.html
       Policies: []
       # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html#sam-specification-template-anatomy-globals-implicit-apis
