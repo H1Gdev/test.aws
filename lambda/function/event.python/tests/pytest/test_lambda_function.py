@@ -15,6 +15,15 @@ def test_handler(lambda_context):
     assert res.get('statusCode') == 200
 
 
+def test_user(lambda_context):
+    print('[User]')
+    event = {
+        'queryStringParameters': {'user': True}
+    }
+    res = lambda_handler(event, lambda_context)
+    assert res.get('statusCode') == 200
+
+
 @pytest.mark.parametrize(
     'level', ['critical', 'error', 'warning', 'info', 'debug', '']
 )

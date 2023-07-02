@@ -17,6 +17,9 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import software.amazon.awssdk.services.sts.StsClient;
+import software.amazon.awssdk.services.sts.model.GetCallerIdentityRequest;
+import software.amazon.awssdk.services.sts.model.GetCallerIdentityResponse;
 import software.amazon.lambda.powertools.logging.Logging;
 
 public class LambdaHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
@@ -25,6 +28,15 @@ public class LambdaHandler implements RequestHandler<APIGatewayProxyRequestEvent
     @Logging
     @Override
     public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent event, Context context) {
+        // User
+        if (Optional.ofNullable(event.getQueryStringParameters()).map(p -> p.get("user")).isPresent()) {
+            StsClient stsClient = StsClient.builder().build();
+            GetCallerIdentityRequest getCallerIdentityRequest = GetCallerIdentityRequest.builder().build();
+            GetCallerIdentityResponse getCallerIdentityResponse = stsClient.getCallerIdentity(getCallerIdentityRequest);
+            // AWS_PROFILE > 'default'
+            LOG.info("[User]" + getCallerIdentityResponse.arn());
+        }
+
         // Logging
         switch (Optional.ofNullable(event.getQueryStringParameters()).map(p -> p.get("log")).orElse(StringUtils.EMPTY)) {
             case "fatal":
