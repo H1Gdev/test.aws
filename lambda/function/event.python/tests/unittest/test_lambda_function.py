@@ -16,6 +16,15 @@ class TestCase(unittest.TestCase):
         print('[Response]', res)
         self.assertEqual(res.get('statusCode'), 200)
 
+    def test_user(self):
+        print('[User]')
+        event = {
+            'queryStringParameters': {'user': True}
+        }
+        context = self.lambda_context()
+        res = lambda_handler(event, context)
+        self.assertEqual(res.get('statusCode'), 200)
+
     def test_logger_level(self):
         levels = ['critical', 'error', 'warn', 'info', 'debug', '']
         for level in levels:
