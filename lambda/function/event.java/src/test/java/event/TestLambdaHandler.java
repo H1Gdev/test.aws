@@ -29,6 +29,16 @@ class TestLambdaHandler {
         assertEquals(200, response.getStatusCode());
     }
 
+    @Test
+    void testUser() {
+        Map<String, String> queryStringParameters = Map.of("user", Boolean.toString(true));
+        APIGatewayProxyRequestEvent event = new APIGatewayProxyRequestEvent();
+        event.setQueryStringParameters(queryStringParameters);
+        LambdaHandler handler = new LambdaHandler();
+        APIGatewayProxyResponseEvent response = handler.handleRequest(event, new LambdaContext());
+        assertEquals(200, response.getStatusCode());
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"fatal", "error", "warn", "info", "debug", "trace", ""})
     void testLogging(String level) {

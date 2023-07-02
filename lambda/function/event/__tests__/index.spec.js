@@ -25,6 +25,14 @@ it('GET', async () => {
   expect(res.statusCode).toBe(200);
 });
 
+it('User', async () => {
+  const event = {
+    queryStringParameters: { user: true },
+  };
+  const res = await handler(event, lambdaContext());
+  expect(res.statusCode).toBe(200);
+});
+
 it.each([
   ['critical'],
   ['error'],
