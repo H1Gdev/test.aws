@@ -30,6 +30,7 @@ dependencies {
     // https://docs.aws.amazon.com/lambda/latest/dg/java-package.html#java-package-libraries
     implementation 'com.amazonaws:aws-lambda-java-core:1.2.1'
     implementation 'com.amazonaws:aws-lambda-java-events:3.11.0'
+    implementation 'software.amazon.awssdk:sts:2.20.25'
 
     aspect 'software.amazon.lambda:powertools-logging:1.15.0'
 

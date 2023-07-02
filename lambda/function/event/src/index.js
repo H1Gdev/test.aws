@@ -1,10 +1,20 @@
 const { Logger } = require('@aws-lambda-powertools/logger');
+const { STS, GetCallerIdentityCommand } = require('@aws-sdk/client-sts');
 const _ = require('lodash');
 
 const logger = new Logger();
 
 exports.handler = async (event/* Request */, context) => {
   logger.addContext(context);
+
+  // User
+  if (event.queryStringParameters?.user) {
+    const sts = new STS({});
+    const getCallerIdentityCommand = new GetCallerIdentityCommand({});
+    const stsResponse = await sts.send(getCallerIdentityCommand);
+    // AWS_PROFILE > 'default'
+    logger.info(`[User]${stsResponse.Arn}`);
+  }
 
   // Logger
   /* eslint-disable no-fallthrough */

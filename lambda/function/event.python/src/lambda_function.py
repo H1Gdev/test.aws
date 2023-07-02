@@ -1,6 +1,7 @@
 import json
 from http import HTTPStatus
 
+import boto3
 from aws_lambda_powertools import Logger
 
 logger = Logger()
@@ -8,8 +9,16 @@ logger = Logger()
 
 @logger.inject_lambda_context
 def lambda_handler(event, context):
-    # Logger
     query_string_parameters = event.get('queryStringParameters')
+
+    # User
+    user = query_string_parameters.get('user') if query_string_parameters is not None else None
+    if user is not None:
+        response = boto3.client('sts').get_caller_identity()
+        # AWS_PROFILE > AWS_DEFAULT_PROFILE > 'default'
+        logger.info(f"[User]{response.get('Arn')}")
+
+    # Logger
     log = query_string_parameters.get('log') if query_string_parameters is not None else None
     if log == 'critical':
         logger.critical(f"[CRITICAL]{event}")
