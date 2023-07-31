@@ -17,10 +17,13 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import software.amazon.awssdk.http.apache.ApacheHttpClient;
 import software.amazon.awssdk.services.sts.StsClient;
 import software.amazon.awssdk.services.sts.model.GetCallerIdentityRequest;
 import software.amazon.awssdk.services.sts.model.GetCallerIdentityResponse;
 import software.amazon.lambda.powertools.logging.Logging;
+import software.amazon.lambda.powertools.parameters.ParamManager;
+import software.amazon.lambda.powertools.parameters.SSMProvider;
 
 public class LambdaHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
     private static final Logger LOG = LogManager.getLogger();
@@ -30,7 +33,10 @@ public class LambdaHandler implements RequestHandler<APIGatewayProxyRequestEvent
     public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent event, Context context) {
         // User
         if (Optional.ofNullable(event.getQueryStringParameters()).map(p -> p.get("user")).isPresent()) {
-            StsClient stsClient = StsClient.builder().build();
+            StsClient stsClient = StsClient.builder()
+                // "software.amazon.lambda:powertools-parameters" depends on "software.amazon.awssdk:url-connection-client", so SdkClientException occurs if HttpClient is not specified.
+                .httpClientBuilder(ApacheHttpClient.builder())
+                .build();
             GetCallerIdentityRequest getCallerIdentityRequest = GetCallerIdentityRequest.builder().build();
             GetCallerIdentityResponse getCallerIdentityResponse = stsClient.getCallerIdentity(getCallerIdentityRequest);
             // AWS_PROFILE > 'default'
@@ -55,6 +61,14 @@ public class LambdaHandler implements RequestHandler<APIGatewayProxyRequestEvent
             default:
                 System.out.println("[System.out.println]" + event);
                 break;
+        }
+
+        // Parameters
+        if (Optional.ofNullable(event.getQueryStringParameters()).map(p -> p.get("ssm")).isPresent()) {
+            SSMProvider ssmProvider = ParamManager.getSsmProvider();
+            // - Transformer consumes resources, so should not be used for Primitive types.
+            String value = ssmProvider.get("/my/parameter");
+            LOG.info("[Parameters]" + value);
         }
 
         // Response

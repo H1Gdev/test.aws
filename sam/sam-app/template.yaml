@@ -39,12 +39,14 @@ Resources:
         # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-ref.html
         - !Ref LodashLayer
         # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-sub.html
-        - !Sub arn:aws:lambda:${AWS::Region}:094274105915:layer:AWSLambdaPowertoolsTypeScript:11
+        - !Sub arn:aws:lambda:${AWS::Region}:094274105915:layer:AWSLambdaPowertoolsTypeScript:21
       Runtime: nodejs18.x
       Architectures:
         - x86_64
       # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-templates.html
-      Policies: []
+      Policies:
+        - SSMParameterReadPolicy:
+            ParameterName: my/parameter
       # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html#sam-specification-template-anatomy-globals-implicit-apis
       Events:
         # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-eventsource.html
@@ -88,7 +90,9 @@ Resources:
         ApplyOn: PublishedVersions
       AutoPublishAlias: live
       # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-templates.html
-      Policies: []
+      Policies:
+        - SSMParameterReadPolicy:
+            ParameterName: my/parameter
       # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html#sam-specification-template-anatomy-globals-implicit-apis
       Events:
         # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-eventsource.html
@@ -131,7 +135,9 @@ Resources:
       Architectures:
         - x86_64
       # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-templates.html
-      Policies: []
+      Policies:
+        - SSMParameterReadPolicy:
+            ParameterName: my/parameter
       # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html#sam-specification-template-anatomy-globals-implicit-apis
       Events:
         # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-eventsource.html

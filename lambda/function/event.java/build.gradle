@@ -19,6 +19,9 @@ jacoco {
 }
 
 test {
+    // Before 1.16.1, AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY are also required.
+    environment 'AWS_REGION', 'ap-northeast-1'
+
     useJUnitPlatform()
     finalizedBy jacocoTestReport
 }
@@ -30,9 +33,11 @@ dependencies {
     // https://docs.aws.amazon.com/lambda/latest/dg/java-package.html#java-package-libraries
     implementation 'com.amazonaws:aws-lambda-java-core:1.2.1'
     implementation 'com.amazonaws:aws-lambda-java-events:3.11.0'
+    implementation 'software.amazon.awssdk:apache-client:2.20.25'
     implementation 'software.amazon.awssdk:sts:2.20.25'
 
-    aspect 'software.amazon.lambda:powertools-logging:1.15.0'
+    aspect 'software.amazon.lambda:powertools-logging:1.16.1'
+    implementation 'software.amazon.lambda:powertools-parameters:1.16.1'
 
     implementation 'org.apache.commons:commons-lang3:3.12.0'
 

@@ -1,4 +1,5 @@
 const { Logger } = require('@aws-lambda-powertools/logger');
+const { getParameter } = require('@aws-lambda-powertools/parameters/ssm');
 const { STS, GetCallerIdentityCommand } = require('@aws-sdk/client-sts');
 const _ = require('lodash');
 
@@ -35,6 +36,12 @@ exports.handler = async (event/* Request */, context) => {
     break;
   }
   /* eslint-enable no-fallthrough */
+
+  // Parameters
+  if (event.queryStringParameters?.ssm) {
+    const value = await getParameter('/my/parameter');
+    logger.info(`[Parameters]${value}`);
+  }
 
   // Response
   const response = {
