@@ -50,6 +50,16 @@ class TestLambdaHandler {
         assertEquals(200, response.getStatusCode());
     }
 
+    @Test
+    void testParameters() {
+        Map<String, String> queryStringParameters = Map.of("ssm", Boolean.toString(true));
+        APIGatewayProxyRequestEvent event = new APIGatewayProxyRequestEvent();
+        event.setQueryStringParameters(queryStringParameters);
+        LambdaHandler handler = new LambdaHandler();
+        APIGatewayProxyResponseEvent response = handler.handleRequest(event, new LambdaContext());
+        assertEquals(200, response.getStatusCode());
+    }
+
     // https://docs.aws.amazon.com/lambda/latest/dg/java-context.html
     static class LambdaContext implements Context {
         public String getAwsRequestId() {

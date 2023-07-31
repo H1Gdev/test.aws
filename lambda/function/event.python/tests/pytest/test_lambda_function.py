@@ -37,6 +37,15 @@ def test_logger_level(level, lambda_context, levels):
     assert res.get('statusCode') == 200
 
 
+def test_parameters(lambda_context):
+    print('[Parameters]')
+    event = {
+        'queryStringParameters': {'ssm': True}
+    }
+    res = lambda_handler(event, lambda_context)
+    assert res.get('statusCode') == 200
+
+
 @pytest.fixture(scope='module')
 def levels():
     # Setup
