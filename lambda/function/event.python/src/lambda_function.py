@@ -3,6 +3,7 @@ from http import HTTPStatus
 
 import boto3
 from aws_lambda_powertools import Logger
+from aws_lambda_powertools.utilities import parameters
 
 logger = Logger()
 
@@ -42,6 +43,12 @@ def lambda_handler(event, context):
         logger.debug(f"[DEBUG]{event}")
     else:
         print('[print]', event)
+
+    # Parameters
+    ssm = query_string_parameters.get('ssm') if query_string_parameters is not None else None
+    if ssm is not None:
+        value = parameters.get_parameter('/my/parameter')
+        logger.info(f"[Parameters]{value}")
 
     # Response
     response = {
