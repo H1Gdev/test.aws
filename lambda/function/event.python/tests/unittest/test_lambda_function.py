@@ -36,6 +36,15 @@ class TestCase(unittest.TestCase):
             res = lambda_handler(event, context)
             self.assertEqual(res.get('statusCode'), 200)
 
+    def test_parameters(self):
+        print('[Parameters]')
+        event = {
+            'queryStringParameters': {'ssm': True}
+        }
+        context = self.lambda_context()
+        res = lambda_handler(event, context)
+        self.assertEqual(res.get('statusCode'), 200)
+
     def lambda_context(self):
         # https://docs.aws.amazon.com/lambda/latest/dg/python-context.html
         @dataclass
