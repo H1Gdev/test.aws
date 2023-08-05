@@ -22,11 +22,14 @@ import software.amazon.awssdk.services.sts.StsClient;
 import software.amazon.awssdk.services.sts.model.GetCallerIdentityRequest;
 import software.amazon.awssdk.services.sts.model.GetCallerIdentityResponse;
 import software.amazon.lambda.powertools.logging.Logging;
-import software.amazon.lambda.powertools.parameters.ParamManager;
-import software.amazon.lambda.powertools.parameters.SSMProvider;
+import software.amazon.lambda.powertools.parameters.Param;
 
 public class LambdaHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
     private static final Logger LOG = LogManager.getLogger();
+
+    // Parameters
+    @Param(key = "/my/parameter")
+    private String paramValue;
 
     @Logging
     @Override
@@ -65,10 +68,8 @@ public class LambdaHandler implements RequestHandler<APIGatewayProxyRequestEvent
 
         // Parameters
         if (Optional.ofNullable(event.getQueryStringParameters()).map(p -> p.get("ssm")).isPresent()) {
-            SSMProvider ssmProvider = ParamManager.getSsmProvider();
             // - Transformer consumes resources, so should not be used for Primitive types.
-            String value = ssmProvider.get("/my/parameter");
-            LOG.info("[Parameters]" + value);
+            LOG.info("[Parameters]" + paramValue);
         }
 
         // Response
