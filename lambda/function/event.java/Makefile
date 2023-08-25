@@ -4,5 +4,5 @@
 build-EventJavaFunction:
 	gradle build
 ifdef ARTIFACTS_DIR
-	unzip -d $(ARTIFACTS_DIR) ./build/libs/event.java.jar
+	unzip -d $(ARTIFACTS_DIR) $(CURDIR)/build/libs/*.jar
 endif
