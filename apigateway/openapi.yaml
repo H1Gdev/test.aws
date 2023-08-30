@@ -1,4 +1,10 @@
 openapi: 3.0.3
+# [OpenAPI](https://www.openapis.org/)
+# [Swagger](https://swagger.io/)
+# [Redocly](https://redocly.com/)
+# - bundle
+# - build-docs
+# - lint
 info:
   title: My API
   description: My API with Amazon API Gateway using OpenAPI.
@@ -19,6 +25,7 @@ paths:
       # Method
       # Request
       parameters:
+        # Reference Object
         - $ref: "#/components/parameters/Parameter0"
       # Response
       responses:
@@ -186,6 +193,7 @@ paths:
 components:
   schemas:
     Body0:
+      # Schema Object is JSON Schema.
       type: object
       properties:
         name:
