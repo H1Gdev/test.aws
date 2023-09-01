@@ -8,20 +8,22 @@ openapi: 3.0.3
 info:
   title: My API
   description: My API with Amazon API Gateway using OpenAPI.
+  license:
+    name: MIT
+    url: https://opensource.org/license/mit/
   version: 0.1.0
 servers:
   - url: "{basePath}"
     variables:
       basePath:
         default: /test
-tags:
-  - name: test
-  - name: lambda
 paths:
   /test:
     get:
       tags:
         - test
+      summary: Test API Gateway mock (Get).
+      operationId: GetTest
       # Method
       # Request
       parameters:
@@ -35,6 +37,9 @@ paths:
             Content-Type:
               schema:
                 type: string
+        400:
+          description: 400 Bad Request response.
+      security: []
       x-amazon-apigateway-request-validator: params-only
       # Integration
       # https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-integration-settings.html
@@ -54,6 +59,8 @@ paths:
     post:
       tags:
         - test
+      summary: Test API Gateway mock (Post).
+      operationId: PostTest
       # Method
       # Request
       parameters:
@@ -65,11 +72,7 @@ paths:
           schema:
             type: string
       requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Body0"
-        required: true
+        $ref: "#/components/requestBodies/Body0"
       # Response
       responses:
         200:
@@ -91,6 +94,9 @@ paths:
                 # Only Request Validation, so not work...
                 required:
                   - message
+        400:
+          description: 400 Bad Request response.
+      security: []
       x-amazon-apigateway-request-validator: all
       # Integration
       x-amazon-apigateway-integration:
@@ -123,6 +129,8 @@ paths:
     get:
       tags:
         - lambda
+      summary: Test API Gateway to Lambda function (Get).
+      operationId: GetLambda
       responses:
         200:
           description: 200 OK response.
@@ -130,6 +138,9 @@ paths:
             Content-Type:
               schema:
                 type: string
+        400:
+          description: 400 Bad Request response.
+      security: []
       x-amazon-apigateway-integration:
         # Custom Integration
         # User-defined Lambda event(Using 'Mapping Templates')
@@ -147,6 +158,8 @@ paths:
     post:
       tags:
         - lambda
+      summary: Test API Gateway to Lambda function (Post).
+      operationId: PostLambda
       responses:
         200:
           description: 200 OK response.
@@ -155,6 +168,9 @@ paths:
             Access-Control-Allow-Origin:
               schema:
                 type: string
+        400:
+          description: 400 Bad Request response.
+      security: []
       x-amazon-apigateway-integration:
         # Custom Integration
         #type: aws
@@ -170,6 +186,8 @@ paths:
     put:
       tags:
         - lambda
+      summary: Test API Gateway to Lambda function (Put).
+      operationId: PutLambda
       responses:
         200:
           description: 200 OK response.
@@ -178,6 +196,9 @@ paths:
             Access-Control-Allow-Origin:
               schema:
                 type: string
+        400:
+          description: 400 Bad Request response.
+      security: []
       x-amazon-apigateway-integration:
         # Custom Integration
         #type: aws
@@ -227,6 +248,11 @@ components:
           schema:
             $ref: "#/components/schemas/Body0"
       required: true
+tags:
+  - name: test
+    description: Test API Gateway.
+  - name: lambda
+    description: Test API Gateway to Lambda function.
 # Request Validation
 # https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-method-request-validation.html
 x-amazon-apigateway-request-validators:
