@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'jacoco'
+    id 'checkstyle'
     id 'io.freefair.aspectj.post-compile-weaving' version '8.1.0'
 }
 
@@ -16,6 +17,10 @@ java {
 jacoco {
     // https://www.jacoco.org/jacoco/trunk/doc/changes.html
     toolVersion = '0.8.10'
+}
+
+checkstyle {
+    toolVersion = '10.12.3'
 }
 
 test {
