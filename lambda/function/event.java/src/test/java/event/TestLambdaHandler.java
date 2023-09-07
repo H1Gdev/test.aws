@@ -4,9 +4,9 @@ import com.amazonaws.services.lambda.runtime.ClientContext;
 import com.amazonaws.services.lambda.runtime.CognitoIdentity;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
+import java.net.HttpURLConnection;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ class TestLambdaHandler {
         APIGatewayProxyRequestEvent event = new APIGatewayProxyRequestEvent();
         LambdaHandler handler = new LambdaHandler();
         APIGatewayProxyResponseEvent response = handler.handleRequest(event, new LambdaContext());
-        assertEquals(200, response.getStatusCode());
+        assertEquals(HttpURLConnection.HTTP_OK, response.getStatusCode());
     }
 
     @Test
@@ -36,7 +36,7 @@ class TestLambdaHandler {
         event.setQueryStringParameters(queryStringParameters);
         LambdaHandler handler = new LambdaHandler();
         APIGatewayProxyResponseEvent response = handler.handleRequest(event, new LambdaContext());
-        assertEquals(200, response.getStatusCode());
+        assertEquals(HttpURLConnection.HTTP_OK, response.getStatusCode());
     }
 
     @ParameterizedTest
@@ -47,7 +47,7 @@ class TestLambdaHandler {
         event.setQueryStringParameters(queryStringParameters);
         LambdaHandler handler = new LambdaHandler();
         APIGatewayProxyResponseEvent response = handler.handleRequest(event, new LambdaContext());
-        assertEquals(200, response.getStatusCode());
+        assertEquals(HttpURLConnection.HTTP_OK, response.getStatusCode());
     }
 
     @Test
@@ -57,11 +57,13 @@ class TestLambdaHandler {
         event.setQueryStringParameters(queryStringParameters);
         LambdaHandler handler = new LambdaHandler();
         APIGatewayProxyResponseEvent response = handler.handleRequest(event, new LambdaContext());
-        assertEquals(200, response.getStatusCode());
+        assertEquals(HttpURLConnection.HTTP_OK, response.getStatusCode());
     }
 
     // https://docs.aws.amazon.com/lambda/latest/dg/java-context.html
     static class LambdaContext implements Context {
+        private static final int REMAINING_TIME_IN_MILLIS = 300000;
+        private static final int MEMORY_LIMIT_IN_MB = 512;
         public String getAwsRequestId() {
             return "test-test";
         }
@@ -87,10 +89,10 @@ class TestLambdaHandler {
             return null;
         }
         public int getRemainingTimeInMillis() {
-            return 300000;
+            return REMAINING_TIME_IN_MILLIS;
         }
         public int getMemoryLimitInMB() {
-            return 512;
+            return MEMORY_LIMIT_IN_MB;
         }
         public LambdaLogger getLogger() {
             return new LambdaLogger() {
