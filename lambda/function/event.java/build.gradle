@@ -27,6 +27,9 @@ test {
     // Before 1.16.1, AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY are also required.
     environment 'AWS_REGION', 'ap-northeast-1'
 
+    // https://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-java-configuration.html#xray-sdk-java-configuration-envvars
+    environment 'AWS_XRAY_CONTEXT_MISSING', 'IGNORE_ERROR'
+
     useJUnitPlatform()
     finalizedBy jacocoTestReport
 }
@@ -43,6 +46,8 @@ dependencies {
 
     aspect 'software.amazon.lambda:powertools-logging:1.16.1'
     aspect 'software.amazon.lambda:powertools-parameters:1.16.1'
+
+    implementation 'com.amazonaws:aws-xray-recorder-sdk-aws-sdk-v2:2.14.0'
 
     implementation 'org.apache.commons:commons-lang3:3.12.0'
 
