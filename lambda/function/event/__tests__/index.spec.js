@@ -1,4 +1,7 @@
+const AWSXRay = require('aws-xray-sdk');
 const { handler } = require('../src/index');
+
+AWSXRay.setContextMissingStrategy('IGNORE_ERROR');
 
 function lambdaContext() {
   // https://docs.aws.amazon.com/lambda/latest/dg/nodejs-context.html

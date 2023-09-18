@@ -30,6 +30,7 @@ Conditions:
 Globals:
   Function:
     Timeout: 3
+    Tracing: Active
 
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
@@ -90,6 +91,7 @@ Resources:
       Architectures:
         - x86_64
       Timeout: 30
+      MemorySize: 512
       # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-snapstart.html
       SnapStart:
         ApplyOn: PublishedVersions
@@ -168,6 +170,7 @@ Resources:
           Name: AWS::Include
           Parameters:
             Location: ./api/openapi.yaml
+      TracingEnabled: true
 
   SSMParameter:
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ssm-parameter.html
