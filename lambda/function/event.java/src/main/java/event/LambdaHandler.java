@@ -12,12 +12,14 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
+import com.amazonaws.xray.interceptors.TracingInterceptor;
 import java.net.HttpURLConnection;
 import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
 import software.amazon.awssdk.http.apache.ApacheHttpClient;
 import software.amazon.awssdk.services.sts.StsClient;
 import software.amazon.awssdk.services.sts.model.GetCallerIdentityRequest;
@@ -40,6 +42,7 @@ public final class LambdaHandler implements RequestHandler<APIGatewayProxyReques
             StsClient stsClient = StsClient.builder()
                 // "software.amazon.lambda:powertools-parameters" depends on "software.amazon.awssdk:url-connection-client", so SdkClientException occurs if HttpClient is not specified.
                 .httpClientBuilder(ApacheHttpClient.builder())
+                .overrideConfiguration(ClientOverrideConfiguration.builder().addExecutionInterceptor(new TracingInterceptor()).build())
                 .build();
             GetCallerIdentityRequest getCallerIdentityRequest = GetCallerIdentityRequest.builder().build();
             GetCallerIdentityResponse getCallerIdentityResponse = stsClient.getCallerIdentity(getCallerIdentityRequest);
