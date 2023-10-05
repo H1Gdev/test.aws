@@ -21,6 +21,11 @@ Parameters:
     Type: String
     Default: Prod
 
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/conditions-section-structure.html
+Conditions:
+  AlwaysFalse:
+    !Equals [true, false]
+
 # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html
 Globals:
   Function:
@@ -163,6 +168,15 @@ Resources:
           Name: AWS::Include
           Parameters:
             Location: ./api/openapi.yaml
+
+  SSMParameter:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ssm-parameter.html
+    Type: AWS::SSM::Parameter
+    Condition: AlwaysFalse
+    Properties:
+      Name: /my/parameter
+      Type: String
+      Value: Test
 
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/outputs-section-structure.html
 Outputs:
