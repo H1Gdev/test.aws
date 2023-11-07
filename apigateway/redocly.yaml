@@ -1,0 +1,6 @@
+# https://redocly.com/docs/cli/configuration/
+
+# https://redocly.com/docs/api-reference-docs/configuration/functionality
+theme:
+  openapi:
+    expandDefaultServerVariables: false
