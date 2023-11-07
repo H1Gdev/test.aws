@@ -13,8 +13,15 @@ info:
     url: https://opensource.org/license/mit/
   version: 0.1.0
 servers:
-  - url: "{basePath}"
+  - url: "{protocol}://{hostname}:{port}{basePath}"
     variables:
+      protocol:
+        enum: [http, https]
+        default: https
+      hostname:
+        default: localhost
+      port:
+        default: "8080"
       basePath:
         default: /test
 paths:
