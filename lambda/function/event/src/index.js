@@ -10,6 +10,11 @@ const tracer = new Tracer();
 
 const lambdaHandler = async (event/* Request */, context) => {
   logger.addContext(context);
+  const requestId = event.requestContext?.requestId;
+  if (requestId != null)
+    logger.appendKeys({correlation_id: requestId});
+  else
+    logger.removeKeys(['correlation_id']);
 
   // User
   if (event.queryStringParameters?.user) {

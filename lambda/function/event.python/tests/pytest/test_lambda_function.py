@@ -37,6 +37,19 @@ def test_logger_level(level, lambda_context, levels):
     assert res.get('statusCode') == 200
 
 
+@pytest.mark.parametrize(
+    'correlation_id', ['correlation_id_value', '', None]
+)
+def test_correlation_id(correlation_id, lambda_context):
+    print('[Correlation ID: ' + str(correlation_id) + ']')
+    event = {
+        'queryStringParameters': {'log': 'info'},
+        'requestContext': {'requestId': correlation_id}
+    }
+    res = lambda_handler(event, lambda_context)
+    assert res.get('statusCode') == 200
+
+
 def test_parameters(lambda_context):
     print('[Parameters]')
     event = {
