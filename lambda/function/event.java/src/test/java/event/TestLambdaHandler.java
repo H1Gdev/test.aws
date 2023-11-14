@@ -11,6 +11,8 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 // https://junit.org/junit5/docs/current/api/org.junit.jupiter.api/org/junit/jupiter/api/Assertions.html
@@ -40,11 +42,25 @@ class TestLambdaHandler {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"fatal", "error", "warn", "info", "debug", "trace", ""})
+    @ValueSource(strings = {"fatal", "error", "warn", "info", "debug", "trace"})
+    @EmptySource
     void testLogging(String level) {
         Map<String, String> queryStringParameters = Map.of("log", level);
         APIGatewayProxyRequestEvent event = new APIGatewayProxyRequestEvent();
         event.setQueryStringParameters(queryStringParameters);
+        LambdaHandler handler = new LambdaHandler();
+        APIGatewayProxyResponseEvent response = handler.handleRequest(event, new LambdaContext());
+        assertEquals(HttpURLConnection.HTTP_OK, response.getStatusCode());
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"correlation_id_value"})
+    void testCorrelationId(String correlationId) {
+        APIGatewayProxyRequestEvent event = new APIGatewayProxyRequestEvent()
+            .withQueryStringParameters(Map.of("log", "info"))
+            .withRequestContext(new APIGatewayProxyRequestEvent.ProxyRequestContext()
+                .withRequestId(correlationId));
         LambdaHandler handler = new LambdaHandler();
         APIGatewayProxyResponseEvent response = handler.handleRequest(event, new LambdaContext());
         assertEquals(HttpURLConnection.HTTP_OK, response.getStatusCode());
