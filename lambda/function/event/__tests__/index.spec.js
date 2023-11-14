@@ -48,6 +48,19 @@ it.each([
   expect(res.statusCode).toBe(200);
 });
 
+it.each([
+  'correlation_id_value',
+  '',
+  null,
+])('Correlation ID: %s', async (correlationId) => {
+  const event = {
+    queryStringParameters: { log: 'info' },
+    requestContext: { requestId: correlationId },
+  };
+  const res = await handler(event, lambdaContext());
+  expect(res.statusCode).toBe(200);
+});
+
 it('Parameters', async () => {
   const event = {
     queryStringParameters: { ssm: true },
