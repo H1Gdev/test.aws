@@ -218,6 +218,119 @@ paths:
         responses:
           default:
             statusCode: 200
+  # REST API
+  /users:
+    get:
+      tags:
+        - REST API
+      summary: Get users.
+      operationId: GetUsers
+      responses:
+        200:
+          description: 200 OK response.
+          headers:
+            Content-Type:
+              schema:
+                type: string
+        400:
+          description: 400 Bad Request response.
+      security:
+        - bearerAuth: []
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${EventRestApiFunction.Arn}/invocations
+        httpMethod: POST
+        responses:
+          default:
+            statusCode: 200
+    post:
+      tags:
+        - REST API
+      summary: Post user.
+      operationId: PostUser
+      responses:
+        200:
+          description: 200 OK response.
+          headers:
+            Content-Type:
+              schema:
+                type: string
+        400:
+          description: 400 Bad Request response.
+      security:
+        - bearerAuth: []
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${EventRestApiFunction.Arn}/invocations
+        httpMethod: POST
+        responses:
+          default:
+            statusCode: 200
+  /users/{userId}:
+    get:
+      tags:
+        - REST API
+      summary: Get user.
+      operationId: GetUser
+      parameters:
+        - name: userId
+          in: path
+          description: User ID
+          required: true
+          schema:
+            $ref: "#/components/schemas/UserId"
+      responses:
+        200:
+          description: 200 OK response.
+          headers:
+            Content-Type:
+              schema:
+                type: string
+        400:
+          description: 400 Bad Request response.
+      security:
+        - bearerAuth: []
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${EventRestApiFunction.Arn}/invocations
+        httpMethod: POST
+        responses:
+          default:
+            statusCode: 200
+    put:
+      tags:
+        - REST API
+      summary: Put user.
+      operationId: PutUser
+      parameters:
+        - name: userId
+          in: path
+          description: User ID
+          required: true
+          schema:
+            $ref: "#/components/schemas/UserId"
+      responses:
+        200:
+          description: 200 OK response.
+          headers:
+            Content-Type:
+              schema:
+                type: string
+        400:
+          description: 400 Bad Request response.
+      security:
+        - bearerAuth: []
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${EventRestApiFunction.Arn}/invocations
+        httpMethod: POST
+        responses:
+          default:
+            statusCode: 200
 components:
   schemas:
     Body0:
@@ -236,6 +349,11 @@ components:
         - AAA
         - BBB
         - CCC
+    UserId:
+      type: string
+      description: UUID format.
+      maxLength: 36
+      example: d85d9e9b-f82a-4a35-ad1d-d643a7e56359
   parameters:
     Parameter0:
       name: q0
@@ -255,11 +373,19 @@ components:
           schema:
             $ref: "#/components/schemas/Body0"
       required: true
+  securitySchemes:
+    # Bearer Authentication
+    # https://swagger.io/docs/specification/authentication/bearer-authentication/
+    bearerAuth:
+      type: http
+      scheme: bearer
 tags:
   - name: test
     description: Test API Gateway.
   - name: lambda
     description: Test API Gateway to Lambda function.
+  - name: REST API
+    description: Test REST API.
 # Request Validation
 # https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-method-request-validation.html
 x-amazon-apigateway-request-validators:
