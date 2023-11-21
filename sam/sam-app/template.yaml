@@ -157,6 +157,43 @@ Resources:
             Method: put
             RestApiId: !Ref OpenApi
 
+  # REST API
+  EventRestApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: event.restapi/src/
+      Handler: rest_lambda_function.lambda_handler
+      Layers:
+        - !Sub arn:aws:lambda:${AWS::Region}:017000801446:layer:AWSLambdaPowertoolsPythonV2:32
+      Runtime: python3.10
+      Architectures:
+        - x86_64
+      Events:
+        GetUsersEvent:
+          Type: Api
+          Properties:
+            Path: /users
+            Method: get
+            RestApiId: !Ref OpenApi
+        PostUserEvent:
+          Type: Api
+          Properties:
+            Path: /users
+            Method: post
+            RestApiId: !Ref OpenApi
+        GetUserEvent:
+          Type: Api
+          Properties:
+            Path: /users/{userId}
+            Method: get
+            RestApiId: !Ref OpenApi
+        PutUserEvent:
+          Type: Api
+          Properties:
+            Path: /users/{userId}
+            Method: put
+            RestApiId: !Ref OpenApi
+
   OpenApi:
     # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-api.html
     Type: AWS::Serverless::Api
