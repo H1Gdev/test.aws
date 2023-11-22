@@ -20,6 +20,10 @@ Parameters:
     Description: API Gateway StageName
     Type: String
     Default: Prod
+  AllowOrigin:
+    Description: API Gateway CorsConfiguration AllowOrigin
+    Type: String
+    Default: "*"
 
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/conditions-section-structure.html
 Conditions:
@@ -168,6 +172,9 @@ Resources:
       Runtime: python3.10
       Architectures:
         - x86_64
+      Environment:
+        Variables:
+          ALLOW_ORIGIN: !Ref AllowOrigin
       Events:
         GetUsersEvent:
           Type: Api
@@ -207,6 +214,26 @@ Resources:
           Name: AWS::Include
           Parameters:
             Location: ./api/openapi.yaml
+      # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-api-corsconfiguration.html
+      # Enable CORS: OPTIONS method(Mock) is added.
+      Cors:
+        # Headers required by Powertools for AWS Lambda (Python).
+        AllowHeaders: "'Authorization,Content-Type,X-Amz-Date,X-Amz-Security-Token,X-Api-Key'"
+        AllowMethods: "'GET,PATCH,POST,PUT,DELETE'"
+        AllowOrigin: !Sub "'${AllowOrigin}'"
+      GatewayResponses:
+        DEFAULT_4XX:
+          ResponseParameters:
+            Headers:
+              Access-Control-Allow-Headers: "'Authorization,Content-Type,X-Amz-Date,X-Amz-Security-Token,X-Api-Key'"
+              Access-Control-Allow-Methods: "'GET,PATCH,POST,PUT,DELETE'"
+              Access-Control-Allow-Origin: !Sub "'${AllowOrigin}'"
+        DEFAULT_5XX:
+          ResponseParameters:
+            Headers:
+              Access-Control-Allow-Headers: "'Authorization,Content-Type,X-Amz-Date,X-Amz-Security-Token,X-Api-Key'"
+              Access-Control-Allow-Methods: "'GET,PATCH,POST,PUT,DELETE'"
+              Access-Control-Allow-Origin: !Sub "'${AllowOrigin}'"
       TracingEnabled: true
 
   SSMParameter:

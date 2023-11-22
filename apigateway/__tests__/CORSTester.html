@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>CORS Tester</title>
+</head>
+<style>
+textarea {
+  resize: none;
+}
+</style>
+<body>
+<script>
+async function execute() {
+  try {
+    const urlString = document.getElementById('urlString').value;
+    if (urlString == null)
+      return;
+    const url = new URL(urlString);
+    const method = document.getElementById('method').value;
+    const mode = document.getElementById('mode').value;
+    const credentials = document.getElementById('credentials').value;
+    const referrer = document.getElementById('referrer').value;
+    const referrerPolicy = document.getElementById('referrerPolicy').value;
+    const headerString = document.getElementById('headerString').value;
+    const header = headerString.length === 0 ? null : JSON.parse(headerString);
+    const bodyString = document.getElementById('bodyString').value;
+    const body = bodyString.length === 0 ? null : JSON.stringify(JSON.parse(bodyString));
+
+    document.getElementById('locationOrigin').value = location.origin
+    document.getElementById('urlOrigin').value = url.origin;
+
+    // https://developer.mozilla.org/docs/Web/API/fetch
+    const response = await fetch(url, {
+      method: method,
+      mode: mode,
+      credentials: credentials,
+      referrer: referrer,
+      referrerPolicy: referrerPolicy,
+      headers: header,
+      body: body,
+      cache: 'no-cache',
+    });
+    console.log(response);
+    const result = document.getElementById('result');
+    result.style.color = response.ok ? 'blue' : 'tomato';
+    result.value = `${response.status} ${response.statusText}`;
+  } catch (error) {
+    console.error(error);
+    const result = document.getElementById('result');
+    result.value = error;
+    result.style.color = 'red';
+  }
+}
+</script>
+<input type="url" id="urlString" placeholder="https://example.com/" size="80" /><br><br>
+<select id="method">
+  <option value="GET" selected>GET</option>
+  <option value="HEAD">HEAD</option>
+  <option value="OPTIONS">OPTIONS</option>
+  <option value="PATCH">PATCH</option>
+  <option value="POST">POST</option>
+  <option value="PUT">PUT</option>
+  <option value="DELETE">DELETE</option>
+</select>
+<select id="mode">
+  <option value="cors">cors</option>
+  <option value="no-cors">no-cors</option>
+  <option value="same-origin">same-origin</option>
+</select>
+<select id="credentials">
+  <option value="omit">omit</option>
+  <option value="same-origin" selected>same-origin</option>
+  <option value="include">include</option>
+</select>
+<br>
+<input type="url" id="referrer" placeholder="referrer" size="80" />
+<select id="referrerPolicy">
+  <option value="no-referrer">no-referrer</option>
+  <option value="no-referrer-when-downgrade">no-referrer-when-downgrade</option>
+  <option value="same-origin">same-origin</option>
+  <option value="origin">origin</option>
+  <option value="strict-origin">strict-origin</option>
+  <option value="origin-when-cross-origin">origin-when-cross-origin</option>
+  <option value="strict-origin-when-cross-origin">strict-origin-when-cross-origin</option>
+  <option value="unsafe-url">unsafe-url</option>
+</select>
+<br><br>
+<textarea id="headerString" placeholder="JSON" rows="4" cols="80">
+{
+  "Content-Type": "application/json"
+}
+</textarea><br>
+<textarea id="bodyString" placeholder="JSON" rows="8" cols="80"></textarea><br>
+<input type="button" value="execute" onclick="execute()" /><br><br>
+<hr>
+<input type="text" id="locationOrigin" placeholder="location.origin" size="80" /><br>
+<input type="text" id="urlOrigin" placeholder="URL.origin" size="80" /><br><br>
+<textarea id="result" placeholder="Result" rows="2" cols="80" readonly="true"></textarea><br>
+</body>
+</html>

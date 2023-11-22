@@ -1,13 +1,15 @@
+import os
 import uuid
 from http import HTTPStatus
 from operator import itemgetter
 
 from aws_lambda_powertools import Logger
-from aws_lambda_powertools.event_handler import APIGatewayRestResolver
+from aws_lambda_powertools.event_handler import APIGatewayRestResolver, CORSConfig
 from aws_lambda_powertools.logging import correlation_paths
 
 logger = Logger()
-app = APIGatewayRestResolver()
+cors_config = CORSConfig() if os.environ.get('ALLOW_ORIGIN') is None else CORSConfig(allow_origin=os.environ['ALLOW_ORIGIN'])
+app = APIGatewayRestResolver(cors=cors_config)
 
 
 # https://swagger.io/docs/specification/authentication/bearer-authentication/
