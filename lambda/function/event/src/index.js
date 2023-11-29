@@ -1,17 +1,18 @@
 const { Logger } = require('@aws-lambda-powertools/logger');
 const { getParameter } = require('@aws-lambda-powertools/parameters/ssm');
+const { Tracer } = require('@aws-lambda-powertools/tracer');
 const { STS, GetCallerIdentityCommand } = require('@aws-sdk/client-sts');
-const AWSXRay = require('aws-xray-sdk');
 const _ = require('lodash');
 
 const logger = new Logger();
+const tracer = new Tracer();
 
 exports.handler = async (event/* Request */, context) => {
   logger.addContext(context);
 
   // User
   if (event.queryStringParameters?.user) {
-    const sts = AWSXRay.captureAWSv3Client(new STS({}));
+    const sts = tracer.captureAWSv3Client(new STS({}));
     const getCallerIdentityCommand = new GetCallerIdentityCommand({});
     const stsResponse = await sts.send(getCallerIdentityCommand);
     // AWS_PROFILE > 'default'
