@@ -2,14 +2,11 @@ import json
 from http import HTTPStatus
 
 import boto3
-from aws_lambda_powertools import Logger
+from aws_lambda_powertools import Logger, Tracer
 from aws_lambda_powertools.utilities import parameters
-from aws_xray_sdk.core import xray_recorder, patch_all
 
-__all__ = ['xray_recorder']
-
-patch_all()
 logger = Logger()
+tracer = Tracer()
 
 
 @logger.inject_lambda_context

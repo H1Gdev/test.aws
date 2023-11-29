@@ -25,12 +25,10 @@
     "url": "https://github.com/H1Gdev/test.aws/issues"
   },
   "homepage": "https://github.com/H1Gdev/test.aws#readme",
-  "dependencies": {
-    "aws-xray-sdk": "^3.5.2"
-  },
   "devDependencies": {
     "@aws-lambda-powertools/logger": "^1.14.0",
     "@aws-lambda-powertools/parameters": "^1.14.0",
+    "@aws-lambda-powertools/tracer": "^1.14.0",
     "@aws-sdk/client-ssm": "^3.369.0",
     "@aws-sdk/client-sts": "^3.369.0",
     "eslint": "^8.37.0",
