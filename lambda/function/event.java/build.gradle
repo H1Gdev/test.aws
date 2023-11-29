@@ -46,8 +46,7 @@ dependencies {
 
     aspect 'software.amazon.lambda:powertools-logging:1.16.1'
     aspect 'software.amazon.lambda:powertools-parameters:1.16.1'
-
-    implementation 'com.amazonaws:aws-xray-recorder-sdk-aws-sdk-v2:2.14.0'
+    implementation 'software.amazon.lambda:powertools-tracing:1.16.1'
 
     implementation 'org.apache.commons:commons-lang3:3.12.0'
 
