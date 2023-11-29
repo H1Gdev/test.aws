@@ -12,7 +12,7 @@
 ### Features
 
 - Core utilities
-  - Tracer
+  - [Tracer](#tracer)
   - [Logger](#logger)
   - Metrics
   - Event Handler
@@ -36,6 +36,10 @@
   - SQS Batch Processing
   - Custom Resources
   - Serialization Utilities
+
+#### Tracer
+
+`AWS X-Ray SDK` wrapper.
 
 #### Logger
 
