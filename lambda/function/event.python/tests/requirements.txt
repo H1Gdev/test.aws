@@ -2,6 +2,7 @@
 aws-lambda-powertools
 boto3
 fastjsonschema
+aws-xray-sdk
 
 # Linter
 flake8
