@@ -25,6 +25,9 @@
     "url": "https://github.com/H1Gdev/test.aws/issues"
   },
   "homepage": "https://github.com/H1Gdev/test.aws#readme",
+  "dependencies": {
+    "@middy/core": "^3.6.2"
+  },
   "devDependencies": {
     "@aws-lambda-powertools/logger": "^1.14.0",
     "@aws-lambda-powertools/parameters": "^1.14.0",

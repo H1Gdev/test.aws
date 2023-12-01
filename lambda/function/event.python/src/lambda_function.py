@@ -10,6 +10,7 @@ tracer = Tracer()
 
 
 @logger.inject_lambda_context
+@tracer.capture_lambda_handler
 def lambda_handler(event, context):
     query_string_parameters = event.get('queryStringParameters')
 

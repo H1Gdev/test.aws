@@ -1,13 +1,14 @@
 const { Logger } = require('@aws-lambda-powertools/logger');
 const { getParameter } = require('@aws-lambda-powertools/parameters/ssm');
-const { Tracer } = require('@aws-lambda-powertools/tracer');
+const { Tracer, captureLambdaHandler } = require('@aws-lambda-powertools/tracer');
 const { STS, GetCallerIdentityCommand } = require('@aws-sdk/client-sts');
+const middy = require('@middy/core');
 const _ = require('lodash');
 
 const logger = new Logger();
 const tracer = new Tracer();
 
-exports.handler = async (event/* Request */, context) => {
+const lambdaHandler = async (event/* Request */, context) => {
   logger.addContext(context);
 
   // User
@@ -59,3 +60,6 @@ exports.handler = async (event/* Request */, context) => {
   };
   return response;
 };
+
+exports.handler = middy(lambdaHandler)
+  .use(captureLambdaHandler(tracer));
