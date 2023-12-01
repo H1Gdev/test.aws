@@ -26,6 +26,7 @@ import software.amazon.awssdk.services.sts.model.GetCallerIdentityRequest;
 import software.amazon.awssdk.services.sts.model.GetCallerIdentityResponse;
 import software.amazon.lambda.powertools.logging.Logging;
 import software.amazon.lambda.powertools.parameters.Param;
+import software.amazon.lambda.powertools.tracing.Tracing;
 
 public final class LambdaHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
     private static final Logger LOG = LogManager.getLogger();
@@ -35,6 +36,7 @@ public final class LambdaHandler implements RequestHandler<APIGatewayProxyReques
     private String paramValue;
 
     @Logging
+    @Tracing
     @Override
     public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent event, Context context) {
         // User
