@@ -161,6 +161,19 @@ Resources:
             Method: put
             RestApiId: !Ref OpenApi
 
+  EventDotNetFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: event.net/Event/src/Event/
+      Handler: Event::Event.LambdaHandler::HandleRequest
+      Runtime: dotnet6
+      Architectures:
+        - x86_64
+      # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-policy-templates.html
+      Policies:
+        - SSMParameterReadPolicy:
+            ParameterName: my/parameter
+
   # REST API
   EventRestApiFunction:
     Type: AWS::Serverless::Function
@@ -277,3 +290,10 @@ Outputs:
   EventPythonFunctionIamRole:
     Description: "Implicit IAM Role created for EventPython function"
     Value: !GetAtt EventPythonFunctionRole.Arn
+
+  EventDotNetFunctionArn:
+    Description: "EventDotNet Lambda Function ARN"
+    Value: !GetAtt EventDotNetFunction.Arn
+  EventDotNetFunctionIamRole:
+    Description: "Implicit IAM Role created for EventDotNet function"
+    Value: !GetAtt EventDotNetFunctionRole.Arn
