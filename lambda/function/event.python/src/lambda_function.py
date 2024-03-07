@@ -1,4 +1,6 @@
 import json
+import os
+import threading
 from http import HTTPStatus
 
 import boto3
@@ -45,7 +47,7 @@ def lambda_handler(event, context):
     elif log == 'debug':
         logger.debug(f"[DEBUG]{event}")
     else:
-        print('[print]', event)
+        print(f"[print]({os.getpid()},{threading.get_ident()})", event)
 
     # Parameters
     ssm = query_string_parameters.get('ssm') if query_string_parameters is not None else None
