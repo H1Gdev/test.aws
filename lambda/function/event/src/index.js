@@ -4,6 +4,7 @@ const { Tracer, captureLambdaHandler } = require('@aws-lambda-powertools/tracer'
 const { STS, GetCallerIdentityCommand } = require('@aws-sdk/client-sts');
 const middy = require('@middy/core');
 const _ = require('lodash');
+const { pid } = require('process');
 
 const logger = new Logger();
 const tracer = new Tracer();
@@ -40,7 +41,7 @@ const lambdaHandler = async (event/* Request */, context) => {
     logger.debug('[DEBUG]', event);
     break;
   default:
-    console.log('[console.log]', event);
+    console.log(`[console.log](${pid})`, event);
     break;
   }
   /* eslint-enable no-fallthrough */
