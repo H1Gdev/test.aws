@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using System.Threading;
 // https://github.com/aws/aws-lambda-dotnet/
 using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
@@ -68,7 +69,7 @@ public class LambdaHandler
                 Logger.LogTrace($"[TRACE]{JsonSerializer.Serialize(request)}");
                 break;
             default:
-                Console.WriteLine($"[Console.WriteLine]{JsonSerializer.Serialize(request)}");
+                Console.WriteLine($"[Console.WriteLine]({Environment.ProcessId},{Thread.CurrentThread.ManagedThreadId}){JsonSerializer.Serialize(request)}");
                 break;
         }
 
