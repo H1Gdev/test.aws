@@ -102,7 +102,8 @@ def post_user():
     return body, HTTPStatus.CREATED.value
 
 
-@app.put('/users/<user_id>')
+# https://developer.mozilla.org/docs/Web/HTTP/Headers/Cache-Control
+@app.put('/users/<user_id>', cache_control='no-store')
 def put_user(user_id):
     # Response
     body = {
