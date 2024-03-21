@@ -131,3 +131,4 @@ def test_put_user(lambda_context):
     res = lambda_handler(event, lambda_context)
     print('[Response]', res)
     assert res.get('statusCode') == 200
+    assert 'Cache-Control' in res.get('multiValueHeaders')
