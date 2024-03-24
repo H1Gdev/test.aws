@@ -6,6 +6,7 @@ from operator import itemgetter
 from aws_lambda_powertools import Logger
 from aws_lambda_powertools.event_handler import APIGatewayRestResolver, CORSConfig
 from aws_lambda_powertools.logging import correlation_paths
+from aws_lambda_powertools.middleware_factory import lambda_handler_decorator
 
 logger = Logger()
 cors_config = CORSConfig() if os.environ.get('ALLOW_ORIGIN') is None else CORSConfig(allow_origin=os.environ['ALLOW_ORIGIN'])
@@ -119,6 +120,42 @@ def put_user(user_id):
     return body, HTTPStatus.OK.value
 
 
+@lambda_handler_decorator
+def add_security_headers(handler, event, context):
+    # (1)Middleware with before logic
+
+    # (2)
+    response = handler(event, context)
+
+    # (3)Middleware with after logic
+
+    if not ('multiValueHeaders' in response or 'headers' in response):
+        response['multiValueHeaders'] = {}
+
+    # https://securityheaders.com/
+    if 'multiValueHeaders' in response:
+        response['multiValueHeaders'] |= {
+            'Referrer-Policy': ['no-referrer'],
+            'Strict-Transport-Security': ['max-age=15552000; includeSubDomains; preload'],
+            'X-DNS-Prefetch-Control': ['off'],
+            'X-Content-Type-Options': ['nosniff'],
+            'X-Permitted-Cross-Domain-Policies': ['none'],
+            'X-Download-Options': ['noopen'],
+        }
+    else:
+        response['headers'] |= {
+            'Referrer-Policy': 'no-referrer',
+            'Strict-Transport-Security': 'max-age=15552000; includeSubDomains; preload',
+            'X-DNS-Prefetch-Control': 'off',
+            'X-Content-Type-Options': 'nosniff',
+            'X-Permitted-Cross-Domain-Policies': 'none',
+            'X-Download-Options': 'noopen',
+        }
+
+    return response
+
+
 @logger.inject_lambda_context(correlation_id_path=correlation_paths.API_GATEWAY_REST)
+@add_security_headers
 def lambda_handler(event, context):
     return app.resolve(event, context)
