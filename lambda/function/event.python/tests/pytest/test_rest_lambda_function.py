@@ -1,8 +1,9 @@
+import copy
 import json
 
 import pytest
 
-from src.rest_lambda_function import lambda_handler, parse_accept_language, parse_bearer_token
+from src.rest_lambda_function import add_security_headers, lambda_handler, parse_accept_language, parse_bearer_token
 
 
 @pytest.mark.parametrize('bearer_token, expected', [
@@ -34,6 +35,42 @@ def test_parse_bearer_token(bearer_token, expected):
 def test_parse_accept_language(accept_language, expected):
     languages = parse_accept_language(accept_language)
     assert languages == expected
+
+
+@pytest.mark.parametrize('event, context, response', [
+    ({}, {}, {}),
+    ({}, {}, {'headers': {}}),
+    ({}, {}, {'headers': {'Content-Type': 'application/json'}}),
+    ({}, {}, {'multiValueHeaders': {}}),
+    ({}, {}, {'multiValueHeaders': {'Content-Type': ['application/json']}}),
+])
+def test_add_security_headers(event, context, response):
+    @add_security_headers
+    def lambda_handler(event, context):
+        return response
+
+    original = copy.deepcopy(response)
+    actual = lambda_handler(event, context)
+
+    if 'headers' in original:
+        assert type(actual['headers']) is dict
+        assert type(actual['headers']['Referrer-Policy']) is str
+        assert type(actual['headers']['Strict-Transport-Security']) is str
+        assert type(actual['headers']['X-DNS-Prefetch-Control']) is str
+        assert type(actual['headers']['X-Content-Type-Options']) is str
+        assert type(actual['headers']['X-Permitted-Cross-Domain-Policies']) is str
+        assert type(actual['headers']['X-Download-Options']) is str
+        assert set(original['headers'].keys()) < set(actual['headers'].keys())
+    else:
+        assert type(actual['multiValueHeaders']) is dict
+        assert type(actual['multiValueHeaders']['Referrer-Policy']) is list
+        assert type(actual['multiValueHeaders']['Strict-Transport-Security']) is list
+        assert type(actual['multiValueHeaders']['X-DNS-Prefetch-Control']) is list
+        assert type(actual['multiValueHeaders']['X-Content-Type-Options']) is list
+        assert type(actual['multiValueHeaders']['X-Permitted-Cross-Domain-Policies']) is list
+        assert type(actual['multiValueHeaders']['X-Download-Options']) is list
+        if 'multiValueHeaders' in original:
+            assert set(original['multiValueHeaders'].keys()) < set(actual['multiValueHeaders'].keys())
 
 
 def test_get_users(lambda_context):
@@ -132,3 +169,4 @@ def test_put_user(lambda_context):
     print('[Response]', res)
     assert res.get('statusCode') == 200
     assert 'Cache-Control' in res.get('multiValueHeaders')
+    assert 'Strict-Transport-Security' in res.get('multiValueHeaders')
