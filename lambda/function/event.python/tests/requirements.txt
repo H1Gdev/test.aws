@@ -11,6 +11,7 @@ pep8-naming
 
 # pytest
 pytest
+pytest-boto-mock
 pytest-cov
 pytest-env
 pytest-html
