@@ -60,4 +60,4 @@ def lambda_handler(event, context):
 
 
 def call_from_api(event):
-    return 'apiId' in event.get('requestContext', {})
+    return 'requestId' in event.get('requestContext', {})
