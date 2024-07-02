@@ -29,9 +29,9 @@
     "@middy/core": "^3.6.2"
   },
   "devDependencies": {
-    "@aws-lambda-powertools/logger": "^1.14.0",
-    "@aws-lambda-powertools/parameters": "^1.14.0",
-    "@aws-lambda-powertools/tracer": "^1.14.0",
+    "@aws-lambda-powertools/logger": "^2.3.0",
+    "@aws-lambda-powertools/parameters": "^2.3.0",
+    "@aws-lambda-powertools/tracer": "^2.3.0",
     "@aws-sdk/client-ssm": "^3.369.0",
     "@aws-sdk/client-sts": "^3.369.0",
     "eslint": "^8.37.0",
