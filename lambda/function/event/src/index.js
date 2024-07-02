@@ -1,6 +1,7 @@
 const { Logger } = require('@aws-lambda-powertools/logger');
 const { getParameter } = require('@aws-lambda-powertools/parameters/ssm');
-const { Tracer, captureLambdaHandler } = require('@aws-lambda-powertools/tracer');
+const { Tracer } = require('@aws-lambda-powertools/tracer');
+const { captureLambdaHandler } = require('@aws-lambda-powertools/tracer/middleware');
 const { STS, GetCallerIdentityCommand } = require('@aws-sdk/client-sts');
 const middy = require('@middy/core');
 const _ = require('lodash');
