@@ -1,3 +1,4 @@
+from src.proxy_lambda_function import call_from_api
 from src.proxy_lambda_function import lambda_handler
 
 # Mock
@@ -149,6 +150,43 @@ def test_mocker_2(lambda_context, boto_mocker, mocker):
     event = {
         'queryStringParameters': {
             'functionName': 'testLambdaFunction'
+        }
+    }
+    context = lambda_context
+    print('[Event]', event)
+    print('[Context]', context)
+    res = lambda_handler(event, context)
+    print('[Response]', res)
+    assert res.get('statusCode') == 200
+
+
+def test_mocker_3(lambda_context, boto_mocker, mocker):
+    boto_mocker.patch(new=boto_mocker.build_make_api_call({
+        'lambda': {
+            'Invoke': boto_mocker.build_lambda_invoke_handler({
+                'testLambdaFunction': {
+                    'StatusCode': 200,
+                    'Payload': {'statusCode': 200, 'body': ''}
+                },
+            }),
+        },
+    }))
+
+    def _call_from_api(event):
+        return False
+
+    # mock.
+    mocker.patch('src.proxy_lambda_function.call_from_api', side_effect=_call_from_api)
+    # unmock.
+    # - use new argument to allocate original object.
+    mocker.patch('src.proxy_lambda_function.call_from_api', new=call_from_api)
+
+    event = {
+        'queryStringParameters': {
+            'functionName': 'testLambdaFunction'
+        },
+        'requestContext': {
+            'requestId': '1e6c24f1-bad7-47a4-9f7b-9b52c1aa30ec'
         }
     }
     context = lambda_context
