@@ -18,3 +18,7 @@ pytest-html
 pytest-mock
 pytest-only
 #requests-mock
+
+# Package
+pipdeptree
+pip-licenses
