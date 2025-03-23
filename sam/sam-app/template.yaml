@@ -91,7 +91,7 @@ Resources:
       Layers:
         # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-ref.html
         - !Ref JavaLayer
-      Runtime: java11
+      Runtime: java21
       Architectures:
         - x86_64
       Timeout: 30
@@ -125,12 +125,12 @@ Resources:
       LayerName: java
       ContentUri: layer.java/
       CompatibleRuntimes:
-        - java11
+        - java21
       CompatibleArchitectures:
         - x86_64
     # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/building-layers.html
     Metadata:
-      BuildMethod: java11
+      BuildMethod: java21
       BuildArchitecture: x86_64
 
   EventPythonFunction:
