@@ -72,7 +72,7 @@ public final class LambdaHandler implements RequestHandler<APIGatewayProxyReques
             LOG.trace("[TRACE]" + event);
             break;
         default:
-            System.out.println("[System.out.println](" + ProcessHandle.current().pid() + "," + Thread.currentThread().getId() + ")" + event);
+            System.out.println("[System.out.println](" + ProcessHandle.current().pid() + "," + Thread.currentThread().threadId() + ")" + event);
             break;
         }
 
