@@ -15,11 +15,11 @@ phases:
   install:
     # https://docs.aws.amazon.com/codebuild/latest/userguide/available-runtimes.html
     runtime-versions:
-      # Amazon Linux 2 x86_64 standard:5.0
+      # Amazon Linux 2023 x86_64 standard:5.0
       dotnet: 6.0
       nodejs: 18
       python: 3.11
-      java: corretto17
+      java: corretto21
     commands:
       - echo "[Phase][install]commands (USER=$USER,PWD=$PWD,HOME=$HOME,SHELL=$SHELL)(whoami=$(whoami),date=$(date))"
       - echo [ENV]TEST_VARIABLE=$TEST_VARIABLE
