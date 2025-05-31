@@ -30,11 +30,25 @@ Conditions:
   AlwaysFalse:
     !Equals [true, false]
 
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/mappings-section-structure.html
+Mappings:
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-findinmap.html
+  # MapName
+  StageMap:
+    # TopLevelKey
+    Prod:
+      # SecondLevelKey
+      Timeout: 3
+      Tracing: Active
+    Dev:
+      Timeout: 10
+      Tracing: Disabled
+
 # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy-globals.html
 Globals:
   Function:
-    Timeout: 3
-    Tracing: Active
+    Timeout: !FindInMap [ StageMap, !Ref StageName, Timeout ]
+    Tracing: !FindInMap [ StageMap, !Ref StageName, Tracing ]
 
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
