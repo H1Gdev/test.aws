@@ -28,7 +28,7 @@ async def async_handler(event, context):
     f0 = async_function(10, 'async')
 
     # call function as async.
-    loop = asyncio.get_event_loop()
+    loop = asyncio.get_running_loop()
     f1 = loop.run_in_executor(None, sync_function, 5, 'sync')
     # if use boto3 client, create it in main thread.
     # f1 = loop.run_in_executor(None, sync_function, boto3.client('lambda'))
@@ -53,8 +53,4 @@ async def async_handler(event, context):
 
 @logger.inject_lambda_context
 def lambda_handler(event, context):
-    loop = asyncio.get_event_loop()
-    try:
-        return loop.run_until_complete(async_handler(event, context))
-    finally:
-        loop.close()
+    return asyncio.run(async_handler(event, context))
