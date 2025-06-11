@@ -25,19 +25,18 @@ def sync_function(delay, what):
 
 async def async_handler(event, context):
     # call async function.
-    c0 = async_function(10, 'async')
+    c0 = async_function(5, 'async')
 
     # call function as async.
-    loop = asyncio.get_running_loop()
-    f0 = loop.run_in_executor(None, sync_function, 5, 'sync')
+    c1 = asyncio.to_thread(sync_function, 10, 'sync')
     # if use boto3 client, create it in main thread.
-    # f0 = loop.run_in_executor(None, sync_function, boto3.client('lambda'))
+    # c1 = asyncio.to_thread(sync_function, boto3.client('lambda'))
 
     # awaitable
     # - Coroutine
     # - Task
     # - Future
-    result0, result1 = await asyncio.gather(c0, f0)
+    result0, result1 = await asyncio.gather(c0, c1)
     # awaitables is List.
     # result0, result1 = await asyncio.gather(*aws)
     logger.info(f"[Async]{result0}")
