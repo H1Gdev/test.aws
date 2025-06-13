@@ -24,22 +24,22 @@ import software.amazon.awssdk.http.apache.ApacheHttpClient;
 import software.amazon.awssdk.services.sts.StsClient;
 import software.amazon.awssdk.services.sts.model.GetCallerIdentityRequest;
 import software.amazon.awssdk.services.sts.model.GetCallerIdentityResponse;
-import software.amazon.lambda.powertools.logging.CorrelationIdPathConstants;
+import software.amazon.lambda.powertools.logging.CorrelationIdPaths;
 import software.amazon.lambda.powertools.logging.Logging;
-import software.amazon.lambda.powertools.parameters.Param;
+import software.amazon.lambda.powertools.parameters.ssm.SSMParam;
 import software.amazon.lambda.powertools.tracing.Tracing;
 
 public final class LambdaHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
     private static final Logger LOG = LogManager.getLogger();
 
     // Parameters
-    @Param(key = "/my/parameter")
+    @SSMParam(key = "/my/parameter")
     private String paramValue;
 
     // Correlation ID Path
     // - cannot be specified as any JSON Pointer.
     // - must be supported by event type.(APIGatewayProxyRequestEvent#getRequestContext()#getRequestId())
-    @Logging(correlationIdPath = CorrelationIdPathConstants.API_GATEWAY_REST, clearState = true)
+    @Logging(correlationIdPath = CorrelationIdPaths.API_GATEWAY_REST, clearState = true)
     @Tracing
     @Override
     public APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent event, Context context) {
