@@ -262,6 +262,9 @@ Resources:
               Access-Control-Allow-Methods: "'GET,PATCH,POST,PUT,DELETE'"
               Access-Control-Allow-Origin: !Sub "'${AllowOrigin}'"
       TracingEnabled: true
+      # Stage variables
+      Variables:
+        StageName: !Ref StageName
 
   SSMParameter:
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ssm-parameter.html

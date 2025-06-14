@@ -225,6 +225,12 @@ paths:
         - REST API
       summary: Get users.
       operationId: GetUsers
+      parameters:
+        - name: version
+          in: query
+          description: Version
+          schema:
+            type: string
       responses:
         200:
           description: 200 OK response.
@@ -241,6 +247,12 @@ paths:
         uri:
           Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${EventRestApiFunction.Arn}/invocations
         httpMethod: POST
+        # https://docs.aws.amazon.com/apigateway/latest/developerguide/request-response-data-mappings.html
+        # https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-swagger-extensions-integration-requestParameters.html
+        # Do not work with 'type: aws_proxy'...
+        requestParameters:
+          # Only parameter mapping.
+          integration.request.header.stage: method.request.querystring.version
         responses:
           default:
             statusCode: 200
