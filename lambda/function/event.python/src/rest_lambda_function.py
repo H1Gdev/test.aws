@@ -158,4 +158,6 @@ def add_security_headers(handler, event, context):
 @logger.inject_lambda_context(correlation_id_path=correlation_paths.API_GATEWAY_REST)
 @add_security_headers
 def lambda_handler(event, context):
+    # event['stageVariables'] is None if Test.
+    logger.info(f"[Event]{event}")
     return app.resolve(event, context)
