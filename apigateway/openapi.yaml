@@ -7,7 +7,8 @@ openapi: 3.0.3
 # - lint
 info:
   title: My API
-  description: My API with Amazon API Gateway using OpenAPI.
+  description: |
+    My API with **Amazon API Gateway** using [OpenAPI](https://www.openapis.org/).
   license:
     name: MIT
     url: https://opensource.org/license/mit/
@@ -224,6 +225,8 @@ paths:
       tags:
         - REST API
       summary: Get users.
+      description: |
+        Get **users**.
       operationId: GetUsers
       parameters:
         - name: version
@@ -260,6 +263,8 @@ paths:
       tags:
         - REST API
       summary: Post user.
+      description: |
+        Post **user**.
       operationId: PostUser
       responses:
         200:
@@ -285,6 +290,8 @@ paths:
       tags:
         - REST API
       summary: Get user.
+      description: |
+        Get **user**.
       operationId: GetUser
       parameters:
         - name: userId
@@ -316,6 +323,8 @@ paths:
       tags:
         - REST API
       summary: Put user.
+      description: |
+        Put **user**.
       operationId: PutUser
       parameters:
         - name: userId
