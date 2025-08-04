@@ -84,9 +84,14 @@ def test_get_users(lambda_context):
     assert res.get('statusCode') == 200
 
 
+@pytest.mark.parametrize('api_key, uppercase', [
+    (True, True),
+    (True, False),
+    (False, False),
+])
 @pytest.mark.parametrize('authorization', [True, False])
 @pytest.mark.parametrize('accept_language', [True, False])
-def test_get_user(authorization, accept_language, lambda_context):
+def test_get_user(api_key, uppercase, authorization, accept_language, lambda_context):
     print('[Get]')
     user_id = 'aaaaaaaa-test-test-test-teeeeeeeeest'
     event = {
@@ -97,6 +102,8 @@ def test_get_user(authorization, accept_language, lambda_context):
         },
     }
     headers = {}
+    if api_key:
+        headers['X-API-KEY' if uppercase else 'x-api-key'] = 'TEST_API_KEY' if uppercase else 'test_api_key'
     if authorization:
         headers['Authorization'] = 'Bearer my_token'
     if accept_language:
@@ -106,6 +113,12 @@ def test_get_user(authorization, accept_language, lambda_context):
     res = lambda_handler(event, lambda_context)
     print('[Response]', res)
     assert res.get('statusCode') == 200
+
+    body = json.loads(res.get('body'))
+    if api_key:
+        assert body['apiKey'] == headers['X-API-KEY' if uppercase else 'x-api-key']
+    else:
+        assert 'apiKey' not in body
 
 
 def test_post_user(lambda_context):
