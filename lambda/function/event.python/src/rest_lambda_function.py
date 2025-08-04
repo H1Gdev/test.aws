@@ -70,6 +70,8 @@ def get_users():
 
 @app.get('/users/<user_id>')
 def get_user(user_id):
+    api_key = app.current_event.get_header_value(name='X-API-KEY')
+
     authorization = app.current_event.get_header_value(name='Authorization')
     token = parse_bearer_token(authorization)
 
@@ -81,6 +83,8 @@ def get_user(user_id):
         'userId': user_id,
         'languages': languages,
     }
+    if api_key is not None:
+        body['apiKey'] = api_key
     if token is not None:
         body['token'] = token
 
