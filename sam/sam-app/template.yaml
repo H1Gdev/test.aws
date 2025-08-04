@@ -236,6 +236,22 @@ Resources:
       EndpointConfiguration: REGIONAL
       StageName: !Ref StageName
       OpenApiVersion: 3.0.3
+      # API Gateway validates API key.(In stages)
+      ApiKeySourceType: HEADER
+      Auth:
+        ApiKeyRequired: true
+        # Generate the following resources:
+        # - AWS::ApiGateway::ApiKey
+        # - AWS::ApiGateway::UsagePlan
+        # - AWS::ApiGateway::UsagePlanKey
+        UsagePlan:
+          CreateUsagePlan: PER_API
+          Quota:
+            Limit: 500
+            Period: MONTH
+          Throttle:
+            BurstLimit: 100
+            RateLimit: 50
       DefinitionBody:
         Fn::Transform:
           Name: AWS::Include
