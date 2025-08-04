@@ -244,7 +244,9 @@ paths:
         400:
           description: 400 Bad Request response.
       security:
-        - bearerAuth: []
+        # https://swagger.io/docs/specification/authentication/#using-multiple-authentication-types
+        - apiKeyAuth: []
+          bearerAuth: []
       x-amazon-apigateway-integration:
         type: aws_proxy
         uri:
@@ -276,7 +278,8 @@ paths:
         400:
           description: 400 Bad Request response.
       security:
-        - bearerAuth: []
+        - apiKeyAuth: []
+          bearerAuth: []
       x-amazon-apigateway-integration:
         type: aws_proxy
         uri:
@@ -310,7 +313,8 @@ paths:
         400:
           description: 400 Bad Request response.
       security:
-        - bearerAuth: []
+        - apiKeyAuth: []
+          bearerAuth: []
       x-amazon-apigateway-integration:
         type: aws_proxy
         uri:
@@ -343,7 +347,8 @@ paths:
         400:
           description: 400 Bad Request response.
       security:
-        - bearerAuth: []
+        - apiKeyAuth: []
+          bearerAuth: []
       x-amazon-apigateway-integration:
         type: aws_proxy
         uri:
@@ -395,6 +400,12 @@ components:
             $ref: "#/components/schemas/Body0"
       required: true
   securitySchemes:
+    # API Keys
+    # https://swagger.io/docs/specification/authentication/api-keys/
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
     # Bearer Authentication
     # https://swagger.io/docs/specification/authentication/bearer-authentication/
     bearerAuth:
