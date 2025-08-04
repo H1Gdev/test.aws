@@ -3,6 +3,7 @@ const Joi = require('joi');
 
 const apiId = 'API_ID';
 const region = 'REGION';
+const apiKey = 'API_KEY'
 const host = `https://${apiId}.execute-api.${region}.amazonaws.com`;
 const stage = 'Prod';
 
@@ -11,6 +12,9 @@ const timeout = 10 * 1000;
 beforeAll(() => {
   frisby.globalSetup({
     request: {
+      headers: {
+        'X-API-KEY': apiKey,
+      },
       timeout: timeout,
     },
   });
@@ -136,6 +140,7 @@ describe('REST API(Sequential)', () => {
             .expect('jsonTypesStrict', {
               userId: Joi.string().guid().required(),
               languages: Joi.array().items(Joi.string()).min(1).required(),
+              apiKey: Joi.string(),
               token: Joi.string(),
             })
             .expect('json', {
@@ -270,5 +275,42 @@ describe('REST API with check CORS', () => {
             name: name,
           });
       });
+  }, timeout);
+});
+
+describe('Error', () => {
+  it('No API Key', () => {
+    const url = new URL(stage + '/users', host);
+    return frisby.setup({
+      request: {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        rawBody: false,
+        inspectOnFailure: true,
+        timeout: timeout,
+      },
+    }, true).get(url)
+      //.inspectRequestHeaders()
+      //.inspectRequest()
+      //.inspectStatus()
+      //.inspectHeaders()
+      //.inspectBody()
+      .expect('status', 403);
+  }, timeout);
+  it('Invalid API Key', () => {
+    const url = new URL(stage + '/users', host);
+    return frisby.get(url, {
+      headers: {
+        'X-API-KEY': `Invalid_${apiKey}`,
+      }
+    })
+      //.inspectRequestHeaders()
+      //.inspectRequest()
+      //.inspectStatus()
+      //.inspectHeaders()
+      //.inspectBody()
+      .expect('status', 403);
   }, timeout);
 });
