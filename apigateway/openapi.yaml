@@ -357,6 +357,44 @@ paths:
         responses:
           default:
             statusCode: 200
+  /users/{userId}/icon:
+    get:
+      tags:
+        - REST API
+      summary: Get user icon.
+      description: |
+        Get **user** icon.
+      operationId: GetUserIcon
+      parameters:
+        - name: userId
+          in: path
+          description: User ID
+          required: true
+          schema:
+            $ref: "#/components/schemas/UserId"
+      responses:
+        200:
+          description: 200 OK response.
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+        400:
+          description: 400 Bad Request response.
+      security:
+        - apiKeyAuth: []
+          bearerAuth: []
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${EventRestApiFunction.Arn}/invocations
+        httpMethod: POST
+        responses:
+          default:
+            statusCode: 200
+x-amazon-apigateway-binary-media-types:
+  - image/png
 components:
   schemas:
     Body0:
