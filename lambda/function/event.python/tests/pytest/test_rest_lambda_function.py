@@ -121,6 +121,22 @@ def test_get_user(api_key, uppercase, authorization, accept_language, lambda_con
         assert 'apiKey' not in body
 
 
+def test_get_user_icon(lambda_context):
+    print('[Get]')
+    user_id = 'aaaaaaaa-test-test-test-teeeeeeeeest'
+    event = {
+        'httpMethod': 'GET',
+        'path': '/users/' + user_id + '/icon',
+        'pathParameters': {
+            'userId': user_id
+        },
+    }
+    res = lambda_handler(event, lambda_context)
+    print('[Response]', res)
+    assert res.get('statusCode') == 200
+    assert res.get('isBase64Encoded') == True
+
+
 def test_post_user(lambda_context):
     print('[Post]')
     event = {

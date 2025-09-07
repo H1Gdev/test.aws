@@ -103,6 +103,28 @@ describe('REST API', () => {
         name: name,
       });
   }, timeout);
+  it('GET /users/{userId}/icon', () => {
+    const userId = '00000000-gggg-0000-0000-000000000000';
+    const url = new URL(stage + '/users/' + userId + '/icon', host);
+    return frisby.setup({ request: { rawBody: true } })
+      .get(url, {
+        headers: {
+          Accept: 'image/png',
+        }
+      })
+      //.inspectRequestHeaders()
+      //.inspectRequest()
+      //.inspectStatus()
+      //.inspectHeaders()
+      //.inspectBody()
+      .expect('status', 200)
+      .expect('header', 'Content-Type', 'image/png')
+      .then(res => {
+        let body = res.body;
+        expect(body.byteLength).toBeGreaterThan(8);
+        expect(String.fromCharCode.apply(null, new Uint8Array(body.slice(1, 4)))).toEqual('PNG');
+      });
+  }, timeout);
 });
 
 describe('REST API(Sequential)', () => {
