@@ -70,12 +70,12 @@ def get_users():
 
 @app.get('/users/<user_id>')
 def get_user(user_id):
-    api_key = app.current_event.get_header_value(name='X-API-KEY')
+    api_key = app.current_event.headers.get('X-API-KEY')
 
-    authorization = app.current_event.get_header_value(name='Authorization')
+    authorization = app.current_event.headers.get('Authorization')
     token = parse_bearer_token(authorization)
 
-    accept_language = app.current_event.get_header_value(name='Accept-Language')
+    accept_language = app.current_event.headers.get('Accept-Language')
     languages = [lang['language'] for lang in parse_accept_language(accept_language)]
 
     # Response
