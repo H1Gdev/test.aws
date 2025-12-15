@@ -25,7 +25,7 @@ def test_user(lambda_context):
 
 
 @pytest.mark.parametrize(
-    'level', ['critical', 'error', 'warning', 'info', 'debug', '']
+    'level', ['critical', 'error', 'warning', 'info', 'debug', ''], indirect=True
 )
 def test_logger_level(level, lambda_context, levels):
     print('[Logger level: ' + level + ']')
@@ -57,6 +57,14 @@ def test_parameters(lambda_context):
     }
     res = lambda_handler(event, lambda_context)
     assert res.get('statusCode') == 200
+
+
+@pytest.fixture
+def level(request):
+    # Indirect parametrize value.
+    # https://docs.pytest.org/en/latest/example/parametrize.html#indirect-parametrization
+    print(f"[Indirect]{request.param}")
+    yield request.param
 
 
 @pytest.fixture(scope='module')
