@@ -73,12 +73,22 @@ def test_add_security_headers(event, context, response):
             assert set(original['multiValueHeaders'].keys()) < set(actual['multiValueHeaders'].keys())
 
 
-def test_get_users(lambda_context):
+@pytest.mark.parametrize('query', [
+    {},
+    {'queryStringParameters': {'version': '1'}},
+    {'multiValueQueryStringParameters': {'version': ['1']}},
+    # API Gateway
+    # version=1
+    {'queryStringParameters': {'version': '1'}, 'multiValueQueryStringParameters': {'version': ['1']}},
+    # version=4&version=1
+    {'queryStringParameters': {'version': '1'}, 'multiValueQueryStringParameters': {'version': ['4', '1']}},
+])
+def test_get_users(lambda_context, query):
     print('[Get]')
     event = {
         'httpMethod': 'GET',
         'path': '/users',
-    }
+    } | query
     res = lambda_handler(event, lambda_context)
     print('[Response]', res)
     assert res.get('statusCode') == 200
