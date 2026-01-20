@@ -155,7 +155,7 @@ Resources:
       Handler: lambda_function.lambda_handler
       Layers:
         # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-sub.html
-        - !Sub arn:aws:lambda:${AWS::Region}:017000801446:layer:AWSLambdaPowertoolsPythonV2:32
+        - !Sub arn:aws:lambda:${AWS::Region}:017000801446:layer:AWSLambdaPowertoolsPythonV3-python310-x86_64:28
       Runtime: python3.10
       Architectures:
         - x86_64
@@ -195,7 +195,7 @@ Resources:
       CodeUri: event.restapi/src/
       Handler: rest_lambda_function.lambda_handler
       Layers:
-        - !Sub arn:aws:lambda:${AWS::Region}:017000801446:layer:AWSLambdaPowertoolsPythonV2:32
+        - !Sub arn:aws:lambda:${AWS::Region}:017000801446:layer:AWSLambdaPowertoolsPythonV3-python310-x86_64:28
       Runtime: python3.10
       Architectures:
         - x86_64
