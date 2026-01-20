@@ -36,6 +36,21 @@ describe('REST API', () => {
         userId: Joi.string().guid().required(),
       });
   }, timeout);
+  it('GET /users?version=1', () => {
+    const url = new URL(stage + '/users', host);
+    url.searchParams.append('version', '1');
+    return frisby.get(url)
+      //.inspectRequestHeaders()
+      //.inspectRequest()
+      //.inspectStatus()
+      //.inspectHeaders()
+      //.inspectBody()
+      .expect('status', 200)
+      .expect('header', 'Content-Type', 'application/json')
+      .expect('jsonTypes', '*', {
+        userId: Joi.string().guid().required(),
+      });
+  }, timeout);
   it('POST /users', () => {
     const name = 'Mr. REST';
     const url = new URL(stage + '/users', host);
@@ -103,6 +118,7 @@ describe('REST API', () => {
         name: name,
       });
   }, timeout);
+
   it('GET /users/{userId}/icon', () => {
     const userId = '00000000-gggg-0000-0000-000000000000';
     const url = new URL(stage + '/users/' + userId + '/icon', host);
