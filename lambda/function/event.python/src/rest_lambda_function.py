@@ -56,15 +56,23 @@ def parse_accept_language(accept_language):
 # https://docs.powertools.aws.dev/lambda/python/latest/core/event_handler/api_gateway/
 @app.get('/users')
 def get_users():
+    # Query
+    # queryStringParameters
+    version = app.current_event.query_string_parameters.get('version')
+    if version is None:
+        # multiValueQueryStringParameters
+        versions = app.current_event.multi_value_query_string_parameters.get('version', ['4'])
+        version = versions[-1]
+
     # Response
-    body = [
-        {
+    if version == '1':
+        body = [{
+            'userId': str(uuid.uuid1())
+        } for _ in range(2)]
+    else:
+        body = [{
             'userId': str(uuid.uuid4())
-        },
-        {
-            'userId': str(uuid.uuid4())
-        }
-    ]
+        } for _ in range(2)]
     return body
 
 
