@@ -229,11 +229,18 @@ paths:
         Get **users**.
       operationId: GetUsers
       parameters:
+        # https://swagger.io/docs/specification/v3_0/serialization/#query-parameters
         - name: version
           in: query
           description: Version
+          # false: version=4,1
+          # true : version=4&version=1
+          explode: true
           schema:
-            type: string
+            type: array
+            items:
+              type: string
+          example: ["4", "1"]
       responses:
         200:
           description: 200 OK response.
