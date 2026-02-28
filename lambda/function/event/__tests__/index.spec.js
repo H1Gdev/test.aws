@@ -1,3 +1,6 @@
+const { STS, GetCallerIdentityCommand } = require('@aws-sdk/client-sts');
+const { mockClient } = require('aws-sdk-client-mock');
+
 const { handler } = require('../src/index');
 
 function lambdaContext() {
@@ -67,4 +70,26 @@ it('Parameters', async () => {
   };
   const res = await handler(event, lambdaContext());
   expect(res.statusCode).toBe(200);
+});
+
+describe('AWS SDK v3 Client mock', () => {
+  const stsMock = mockClient(STS);
+
+  beforeEach(() => {
+    stsMock.reset();
+  });
+
+  it('mock', async () => {
+    stsMock
+      .on(GetCallerIdentityCommand)
+      .resolves({
+        Arn: 'arn:aws:iam::0xxxxxxxxxx0:user/mocker',
+      });
+
+    const event = {
+      queryStringParameters: { user: true },
+    };
+    const res = await handler(event, lambdaContext());
+    expect(res.statusCode).toBe(200);
+  });
 });
