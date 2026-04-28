@@ -2,7 +2,7 @@ const { Logger } = require('@aws-lambda-powertools/logger');
 const { getParameter } = require('@aws-lambda-powertools/parameters/ssm');
 const { Tracer } = require('@aws-lambda-powertools/tracer');
 const { captureLambdaHandler } = require('@aws-lambda-powertools/tracer/middleware');
-const { STS, GetCallerIdentityCommand } = require('@aws-sdk/client-sts');
+const { STSClient, GetCallerIdentityCommand } = require('@aws-sdk/client-sts');
 const middy = require('@middy/core');
 const _ = require('lodash');
 const { pid } = require('process');
@@ -20,7 +20,7 @@ const lambdaHandler = async (event/* Request */, context) => {
 
   // User
   if (event.queryStringParameters?.user) {
-    const sts = tracer.captureAWSv3Client(new STS({}));
+    const sts = tracer.captureAWSv3Client(new STSClient({}));
     const getCallerIdentityCommand = new GetCallerIdentityCommand({});
     const stsResponse = await sts.send(getCallerIdentityCommand);
     // AWS_PROFILE > 'default'
