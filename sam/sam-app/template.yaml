@@ -240,6 +240,7 @@ Resources:
       ApiKeySourceType: HEADER
       Auth:
         ApiKeyRequired: true
+        AddApiKeyRequiredToCorsPreflight: false
         # Generate the following resources:
         # - AWS::ApiGateway::ApiKey
         # - AWS::ApiGateway::UsagePlan
