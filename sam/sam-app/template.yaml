@@ -79,8 +79,8 @@ Resources:
           # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html
           Type: Api
           Properties:
-            Path: /lambda
-            Method: post
+            Path: /lambda/javascript
+            Method: get
             RestApiId: !Ref OpenApi
   LodashLayer:
     # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-layerversion.html
@@ -126,7 +126,7 @@ Resources:
           # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html
           Type: Api
           Properties:
-            Path: /lambda
+            Path: /lambda/java
             Method: get
             RestApiId: !Ref OpenApi
     # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/building-custom-runtimes.html
@@ -171,8 +171,8 @@ Resources:
           # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html
           Type: Api
           Properties:
-            Path: /lambda
-            Method: put
+            Path: /lambda/python
+            Method: get
             RestApiId: !Ref OpenApi
 
   EventDotNetFunction:
@@ -187,6 +187,16 @@ Resources:
       Policies:
         - SSMParameterReadPolicy:
             ParameterName: my/parameter
+      Events:
+        # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-eventsource.html
+        GetEvent:
+          # lambda:InvokeFunction permission is implicitly granted.
+          # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html
+          Type: Api
+          Properties:
+            Path: /lambda/dotnet
+            Method: get
+            RestApiId: !Ref OpenApi
 
   # REST API
   EventRestApiFunction:
