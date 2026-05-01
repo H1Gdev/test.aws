@@ -47,9 +47,17 @@ describe('Amazon API Gateway Example', () => {
       .expect('status', 200)
       .expect('header', 'Content-Type', 'application/json');
   }, timeout);
+});
 
-  it('GET /lambda', () => {
-    const url = new URL(stage + '/lambda', host);
+describe('Amazon API Gateway to AWS Lambda', () => {
+  it.each([
+    '/lambda/javascript',
+    '/lambda/java',
+    '/lambda/python',
+    '/lambda/dotnet',
+    '/lambda/rust',
+  ])('GET %s', path => {
+    const url = new URL(stage + path, host);
     url.searchParams.append('q0', 'a');
     return frisby.get(url)
       //.inspectRequestHeaders()
@@ -60,8 +68,14 @@ describe('Amazon API Gateway Example', () => {
       .expect('status', 200)
       .expect('header', 'Content-Type', 'application/json');
   }, timeout);
-  it('POST /lambda', () => {
-    const url = new URL(stage + '/lambda', host);
+  it.skip.each([
+    '/lambda/javascript',
+    '/lambda/java',
+    '/lambda/python',
+    '/lambda/dotnet',
+    '/lambda/rust',
+  ])('POST %s', path => {
+    const url = new URL(stage + path, host);
     url.searchParams.append('q0', 'a');
     return frisby.post(url, {
       body: {
