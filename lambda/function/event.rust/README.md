@@ -1,6 +1,6 @@
 # Introduction
 
-event-rust is a Rust project that implements an AWS Lambda function in Rust.
+`event-rust` is a Rust project that implements an AWS Lambda function in Rust.
 
 ## Prerequisites
 
@@ -9,11 +9,40 @@ event-rust is a Rust project that implements an AWS Lambda function in Rust.
 
 ## Building
 
+```shell
+# For Development
+cargo lambda build
+```
+
+```shell
+# For Release
+cargo lambda build --release
+```
+
 To build the project for production, run `cargo lambda build --release`. Remove the `--release` flag to build for development.
 
 Read more about building your lambda function in [the Cargo Lambda documentation](https://www.cargo-lambda.info/commands/build.html).
 
 ## Testing
+
+```shell
+# For Unit test
+cargo test
+```
+
+```shell
+# For Integration test
+
+# (Background terminal)
+# use port 9000.
+cargo lambda watch
+
+cargo lambda invoke
+# with remote example data.
+cargo lambda invoke --data-example apigw-request
+# with local data file.
+cargo lambda invoke --data-file ./events/apigw-request-min.json
+```
 
 You can run regular Rust unit tests with `cargo test`.
 
@@ -51,6 +80,11 @@ Read more about running the local server in [the Cargo Lambda documentation for 
 Read more about invoking the function in [the Cargo Lambda documentation for the `invoke` command](https://www.cargo-lambda.info/commands/invoke.html).
 
 ## Deploying
+
+```shell
+# For Deploy
+cargo lambda deploy
+```
 
 To deploy the project, run `cargo lambda deploy`. This will create an IAM role and a Lambda function in your AWS account.
 
