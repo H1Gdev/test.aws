@@ -1,4 +1,5 @@
 use lambda_http::{Body, Error, Request, RequestExt, Response};
+use serde_json::json;
 
 /// This is the main body for the function.
 /// Write your code inside it.
@@ -11,13 +12,16 @@ pub(crate) async fn function_handler(event: Request) -> Result<Response<Body>, E
         .and_then(|params| params.first("name"))
         .unwrap_or("world");
     let message = format!("Hello {who}, this is an AWS Lambda HTTP request");
+    let body = json!({
+        "message": message,
+    });
 
     // Return something that implements IntoResponse.
     // It will be serialized to the right response event automatically by the runtime
     let resp = Response::builder()
         .status(200)
-        .header("content-type", "text/html")
-        .body(message.into())
+        .header("content-type", "application/json")
+        .body(body.to_string().into())
         .map_err(Box::new)?;
     Ok(resp)
 }
@@ -27,6 +31,7 @@ mod tests {
     use super::*;
     use std::collections::HashMap;
     use lambda_http::{Request, RequestExt};
+    use serde_json::Value;
 
     #[tokio::test]
     async fn test_generic_http_handler() {
@@ -37,9 +42,10 @@ mod tests {
 
         let body_bytes = response.body().to_vec();
         let body_string = String::from_utf8(body_bytes).unwrap();
+        let v: Value = serde_json::from_str(&body_string).unwrap();
 
         assert_eq!(
-            body_string,
+            v["message"],
             "Hello world, this is an AWS Lambda HTTP request"
         );
     }
@@ -57,9 +63,10 @@ mod tests {
 
         let body_bytes = response.body().to_vec();
         let body_string = String::from_utf8(body_bytes).unwrap();
+        let v: Value = serde_json::from_str(&body_string).unwrap();
 
         assert_eq!(
-            body_string,
+            v["message"],
             "Hello event-rust, this is an AWS Lambda HTTP request"
         );
     }
