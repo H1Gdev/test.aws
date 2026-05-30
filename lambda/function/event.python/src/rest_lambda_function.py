@@ -1,3 +1,4 @@
+import base64
 import os
 import uuid
 from http import HTTPStatus
@@ -122,6 +123,28 @@ def get_user_icon(user_id):
         0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae, 0x42, 0x60, 0x82
     ]
     return Response(status_code=HTTPStatus.OK.value, content_type='image/png', body=bytes(icon))
+
+
+@app.post('/users/<user_id>/icon')
+def post_user_icon(user_id):
+    # multipart/form-data
+    _, boundary = app.current_event.headers.get('Content-Type').split(';')
+    boundary_value = boundary.split()[0].split('=')[1]
+
+    data = base64.b64decode(app.current_event.body) if app.current_event.is_base64_encoded else app.current_event.body.encode()
+    parts = data.split(f"--{boundary_value}--\r\n".encode())[0].split(f"--{boundary_value}\r\n".encode())[1:]
+
+    for part in parts:
+        header, body = part.split('\r\n\r\n'.encode())
+        headers = {h.split(':')[0].split()[0].lower(): h.split(':')[1] for h in header.decode().split('\r\n')}
+
+        values = [v.split()[0] for v in headers.get('Content-Disposition'.lower()).split(';')]
+        if values[0] != 'form-data':
+            raise Exception(values[0])
+        name = [v.split()[0] for v in values[1].split('=')]
+        if name[0] != 'name':
+            raise Exception(name)
+        name = [n for n in name[1].split('"') if n][0]
 
 
 @app.post('/users')

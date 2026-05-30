@@ -452,8 +452,58 @@ paths:
         responses:
           default:
             statusCode: 200
+    post:
+      tags:
+        - REST API
+      summary: Post user icon.
+      description: |
+        Post **user** icon.
+      operationId: PostUserIcon
+      parameters:
+        - name: userId
+          in: path
+          description: User ID
+          required: true
+          schema:
+            $ref: "#/components/schemas/UserId"
+      # https://swagger.io/docs/specification/v3_0/describing-request-body/multipart-requests/
+      requestBody:
+        content:
+          # Working with Binary Data
+          # https://swagger.io/specification/#working-with-binary-data
+          # https://swagger.io/specification/v3/#working-with-binary-data
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                data:
+                  type: string
+                  format: binary
+      responses:
+        200:
+          description: 200 OK response.
+          headers:
+            Content-Type:
+              schema:
+                type: string
+        400:
+          description: 400 Bad Request response.
+      security:
+        - apiKeyAuth: []
+          bearerAuth: []
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${EventRestApiFunction.Arn}/invocations
+        httpMethod: POST
+        responses:
+          default:
+            statusCode: 200
 x-amazon-apigateway-binary-media-types:
   - image/png
+  - multipart/form-data
 components:
   schemas:
     Body0:
