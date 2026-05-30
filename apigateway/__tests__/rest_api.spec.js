@@ -158,6 +158,22 @@ describe('REST API', () => {
         expect(String.fromCharCode.apply(null, new Uint8Array(body.slice(1, 4)))).toEqual('PNG');
       });
   }, timeout);
+  it('POST /users/{userId}/icon', () => {
+    const form = frisby.formData();
+    form.append('name', 'buffer');
+    form.append('data', Buffer.alloc(10, 0xff));
+    const userId = '00000000-gggg-0000-0000-000000000000';
+    const url = new URL(stage + '/users/' + userId + '/icon', host);
+    return frisby.post(url, {
+      body: form,
+    })
+      //.inspectRequestHeaders()
+      //.inspectRequest()
+      //.inspectStatus()
+      //.inspectHeaders()
+      //.inspectBody()
+      .expect('status', 200);
+  }, timeout);
 });
 
 describe('REST API(Sequential)', () => {

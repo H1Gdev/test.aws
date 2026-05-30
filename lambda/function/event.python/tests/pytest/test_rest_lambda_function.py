@@ -1,3 +1,4 @@
+import base64
 import copy
 import json
 
@@ -145,6 +146,43 @@ def test_get_user_icon(lambda_context):
     print('[Response]', res)
     assert res.get('statusCode') == 200
     assert res.get('isBase64Encoded') is True
+
+
+def test_post_user_icon(lambda_context):
+    print('[Post]')
+    user_id = 'aaaaaaaa-test-test-test-teeeeeeeeest'
+    boundary = '--aa--bb--cc'
+    event = {
+        'httpMethod': 'POST',
+        'path': '/users/' + user_id + '/icon',
+        'pathParameters': {
+            'userId': user_id
+        },
+        'headers': {
+            'Content-Type': f"multipart/form-data;boundary={boundary}",
+        },
+        'multiValueHeaders': {
+            'Content-Type': [f"multipart/form-data;boundary={boundary}"],
+        },
+        'body': base64.b64encode((
+            f"--{boundary}\r\n"
+            'Content-Disposition: form-data; name="name"\r\n'
+            'Content-Type: text/plain; charset=UTF-8\r\n'
+            '\r\n'
+            'PNG\r\n'
+            f"--{boundary}\r\n"
+            'Content-Disposition: form-data; name="data"\r\n'
+            'Content-Type: application/octet-stream\r\n'
+            '\r\n'
+            '\xfe\xff\r\n'
+            f"--{boundary}--\r\n"
+            '\r\n'
+        ).encode()),
+        'isBase64Encoded': True,
+    }
+    res = lambda_handler(event, lambda_context)
+    print('[Response]', res)
+    assert res.get('statusCode') == 200
 
 
 def test_post_user(lambda_context):
