@@ -263,6 +263,12 @@ Resources:
             Path: /users/{userId}/icon
             Method: get
             RestApiId: !Ref OpenApi
+        PostUserIconEvent:
+          Type: Api
+          Properties:
+            Path: /users/{userId}/icon
+            Method: post
+            RestApiId: !Ref OpenApi
         PutUserEvent:
           Type: Api
           Properties:
