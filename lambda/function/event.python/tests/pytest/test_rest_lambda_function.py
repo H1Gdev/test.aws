@@ -7,6 +7,37 @@ import pytest
 from src.rest_lambda_function import add_security_headers, lambda_handler, parse_accept_language, parse_bearer_token
 
 
+# for Database.
+@pytest.fixture
+def insert_table1():
+    delete_table1 = 'DELETE FROM table1 WHERE id = %(id)s;'
+    record_list = []
+
+    def _insert_table1(id, param1=None, param2=None):
+        params = {
+            'id': id,
+
+            'param1': 'fixed',
+        }
+        columns = set(params.keys())
+        additionals = {}
+        if param1 is not None:
+            columns.add('param1')
+            additionals['param1'] = param1
+        if param2 is not None:
+            columns.add('param2')
+            additionals['param2'] = param2
+        record_list.append(params)
+        sql = f"INSERT INTO table1 ({', '.join(columns)}) VALUES ({', '.join([f'%({v})s' for v in columns])});"
+        print(f"[INSERT]sql={sql},params={params | additionals}")
+        return params['id']
+
+    yield _insert_table1
+
+    for record in record_list:
+        print(f"[DELETE]sql={delete_table1},params={record}")
+
+
 @pytest.mark.parametrize('bearer_token, expected', [
     (None, None),
     ('', None),
