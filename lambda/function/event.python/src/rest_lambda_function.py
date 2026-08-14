@@ -1,15 +1,17 @@
 import base64
+import json
 import os
 import uuid
 from http import HTTPStatus
 from operator import itemgetter
 
-from aws_lambda_powertools import Logger
+from aws_lambda_powertools import Logger, Tracer
 from aws_lambda_powertools.event_handler import APIGatewayRestResolver, CORSConfig, Response
 from aws_lambda_powertools.logging import correlation_paths
 from aws_lambda_powertools.middleware_factory import lambda_handler_decorator
 
 logger = Logger()
+tracer = Tracer()
 cors_config = CORSConfig() if os.environ.get('ALLOW_ORIGIN') is None else CORSConfig(allow_origin=os.environ['ALLOW_ORIGIN'])
 app = APIGatewayRestResolver(cors=cors_config)
 
@@ -216,8 +218,15 @@ def add_security_headers(handler, event, context):
 
 
 @logger.inject_lambda_context(correlation_id_path=correlation_paths.API_GATEWAY_REST)
+@tracer.capture_lambda_handler
 @add_security_headers
 def lambda_handler(event, context):
+    # https://docs.python.org/3/library/json.html
+    def custom_json(obj):
+        if isinstance(obj, bytes):
+            return str(obj)
+        raise TypeError(f'Object of type {obj.__class__.__name__} is not JSON serializable')
+
     # event['stageVariables'] is None if Test.
-    logger.info(f"[Event]{event}")
+    logger.info(json.dumps({'[Event]': event}, default=custom_json))
     return app.resolve(event, context)
