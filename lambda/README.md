@@ -2,7 +2,7 @@
 
 - [Documentation](https://docs.aws.amazon.com/lambda/)
 
-## Powertools for AWS Lambda
+## [Powertools for AWS Lambda](https://docs.aws.amazon.com/lambda/latest/dg/powertools-for-lambda.html)
 
 - [Powertools for AWS Lambda (Python)](https://awslabs.github.io/aws-lambda-powertools-python/)
 - [Powertools for AWS Lambda (Java)](https://awslabs.github.io/aws-lambda-powertools-java/)
@@ -46,3 +46,10 @@
 ##### log level
 
 Set `Log Level` > Constructor > Environment variable(`LOG_LEVEL` or `POWERTOOLS_LOG_LEVEL`) > (`log4j2`) > Default
+
+## [AWS SDK](https://docs.aws.amazon.com/lambda/latest/dg/sdk-general-information-section.html)
+
+- [AWS SDK for Python (Boto3)](https://docs.aws.amazon.com/sdk-for-python/)
+- [AWS SDK for Java](https://docs.aws.amazon.com/sdk-for-java/)
+- [AWS SDK for JavaScript](https://docs.aws.amazon.com/sdk-for-javascript/)
+- [AWS SDK for .NET](https://docs.aws.amazon.com/sdk-for-net/)
