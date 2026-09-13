@@ -14,9 +14,11 @@ pytest
 pytest-boto-mock
 pytest-cov
 pytest-env
+pytest-forked
 pytest-html
 pytest-mock
 pytest-only
+pytest-xdist
 #requests-mock
 
 # Package
