@@ -9,7 +9,7 @@
   "scripts": {
     "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" npx jest",
     "lint": "eslint src/. __tests__/. --ext .js",
-    "archive": "rm -rf node_modules; npm install --omit=dev && rm -f function.zip; zip function.zip -r . -x 'package.json' 'package-lock.json' '*__tests__*' '*coverage*' '*.eslintrc*' '*.git*'"
+    "archive": "rm -rf node_modules; rm -f function.zip; npm install --omit=dev && zip function.zip -r . -x 'package.json' 'package-lock.json' '*__tests__*' '*coverage*' '*.eslintrc*' '*.git*'"
   },
   "repository": {
     "type": "git",
