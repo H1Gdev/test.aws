@@ -6,7 +6,7 @@
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "archive": "rm -rf node_modules; npm install --omit=dev && rm -f layer.zip; cd .. && cp -r lodash nodejs && zip lodash/layer.zip -r nodejs -x 'nodejs/package.json' 'nodejs/package-lock.json' '*__tests__*' '*coverage*' '*.eslintrc*' '*.git*' && rm -rf nodejs"
+    "archive": "rm -rf node_modules; rm -f layer.zip; rm -rf ../nodejs; npm install --omit=dev && n=$(basename $(pwd)) && cd .. && cp -r $n nodejs && zip $n/layer.zip -r nodejs -x 'nodejs/package.json' 'nodejs/package-lock.json' '*__tests__*' '*coverage*' '*.eslintrc*' '*.git*' && rm -rf nodejs"
   },
   "repository": {
     "type": "git",
